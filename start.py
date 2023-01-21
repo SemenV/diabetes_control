@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request,jsonify
 
 app = Flask(__name__)
 
@@ -14,12 +14,12 @@ testt = {
  
 }
 
-@app.route("/", methods=['GET'])
-def index():
-    return jsonify(testt)
-    
+   
 @app.route("/", methods=['POST'])
 def indexx():
+    request_data = request.get_json()
+    comm = request_data["request"]["command"]
+    testt["response"]["text"] = comm
     return jsonify(testt)
     
 if __name__ == "__main__":

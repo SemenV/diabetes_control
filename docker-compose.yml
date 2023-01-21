@@ -1,8 +1,10 @@
 version: '3'
 
+
 services:
   webhook:
     build: .
+    image: webh
     ports:
       - 5000:5000
 
@@ -11,4 +13,5 @@ services:
     command: ngrok http --region=eu --authtoken 2KM7QYmKzUjTD5niWe60KvdonvL_J21LRhcEhQDgBnEa9bAo webhook:5000 
     ports:
       - 4040:4040
+    
 
