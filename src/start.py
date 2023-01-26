@@ -15,7 +15,17 @@ def indexx():
     comm = request_data["request"]["command"]
     
     r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
-    zapr["response"]["text"] = r.json()["products"][1]["nutriments"]["carbohydrates"]
+    ugl = -1 
+    i = 0;
+    while ugl < 0: 
+        try: r.json()["products"][i]["nutriments"]["carbohydrates"]
+        except:
+            i = i + 1
+            continue
+        else:
+            ugl = r.json()["products"][i]["nutriments"]["carbohydrates"]
+    
+    zapr["response"]["text"] = ugl
     return jsonify(zapr)
     
 if __name__ == "__main__":
