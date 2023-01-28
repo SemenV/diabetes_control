@@ -2,6 +2,9 @@ from flask import Flask, request,jsonify
 import requests
 import json
 import os
+from fsm import FSM
+
+fsm = FSM()
 
 app = Flask(__name__)
 
