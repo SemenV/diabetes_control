@@ -18,8 +18,8 @@ class Node():
     def next(self,stroka):
         for x in self.nodes:                
             if (re.match(x.stroka,stroka) != None):        
-                return x
-        return 0
+                return [x,1]
+        return [self,0]
     
     def getDiscAvNodes(self):
         tmp = ""
@@ -58,7 +58,9 @@ class FSM():
         Node.connectOneWay(calc,startNode)
         
     def act(self,strAct):
-        self.cnode = self.cnode.next(strAct)
+        l = self.cnode.next(strAct)
+        self.cnode = l[0]
+        return l[1] #равен 0 - команда не найдена
         
     def getAvAct(self):
          return self.cnode.getDiscAvNodes()
