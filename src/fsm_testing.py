@@ -1,32 +1,22 @@
 from fsm import FSM
 
 fsm = FSM()
-print(fsm.getAvAct())
-if (fsm.act("йцу")[0] == 1):
-    print("Команда недоступна " + fsm.getAvAct())
 
-fsm.act("диабет")
-print(fsm.getAvAct())
+print(fsm.act(""))
 
-if (fsm.act("йцу")[0] == 1):
-    print("Команда недоступна " + fsm.getAvAct())
+print(fsm.act("диабет"))
 
-fsm.act("1")
-print(fsm.getAvAct())
-
-if (fsm.act("греча вареная")[0] == 1):
-    print("Команда недоступна " + fsm.getAvAct())
-
-print(fsm.getAvAct())
+print(fsm.act("1"))
 
 
+print(fsm.act("сметана"))
 
+print(fsm.act("1111"))
 
-#fsm.act("qwe")
-#print(fsm.getAvAct())
-#fsm.act("хлеб")
-#print(fsm.getAvAct())
-#fsm.act("100")
-#print(fsm.getAvAct())
-#fsm.act("подсчитать")
-#print(fsm.getAvAct())
+print(fsm.act("творог"))
+
+print(fsm.act("222"))
+
+print(fsm.act("900"))
+
+print(fsm.act("подсчитать"))
