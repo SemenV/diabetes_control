@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+qwe = function () {
+
+var dps1 = [];
+var dps2 = [];
+var chart = new CanvasJS.Chart("chartContainer", {
+	exportEnabled: true,
+	title :{
+		text: "Dynamic Spline Chart"
+	},
+	data: [{
+		type: "line",
+		markerSize: 0,
+		dataPoints: dps2 
+	},
+	{
+	type: "scatter",
+		toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+		dataPoints: dps1
+	
+	}]
+	
+});
+
+var xVal = 0;
+var yVal = 100;
+var updateInterval = 1000;
+var dataLength = 50; // number of dataPoints visible at any point
+
+
+	dps1.push({
+		x: 1,
+		y: 1                
+	});
+	dps1.push({
+		x: 2,
+		y: 2                
+	});
+	dps1.push({
+		x: 3,
+		y: 1                
+	});
+
+chart.render();
+
+	dps2.push({
+		x: 1,
+		y: 1                
+	});
+	dps2.push({
+		x: 1.5,
+		y: 3                
+	});
+	dps2.push({
+		x: 2,
+		y: 2                
+	});
+		dps2.push({
+		x: 2.5,
+		y: 3                
+	});
+	dps2.push({
+		x: 3,
+		y: 1                
+	});
+
+
+
+chart.render();
+
+}
+</script>
+</head>
+<body  onload="qwe()">
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> 
+</body>
+</html>

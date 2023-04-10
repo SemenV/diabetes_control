@@ -11,7 +11,7 @@ class Node():
         self.opisanie = opisanie
         self.stage = stage
 
-    def doSmth(self,comm):
+    def doSmth(self,comm,usr_id):
         return [1,""]
     
     @staticmethod
@@ -19,10 +19,10 @@ class Node():
         node1.nodes.append(node2)
         
         
-    def next(self,stroka):
+    def next(self,stroka,usr_id):
         for x in self.nodes:                
-            if (re.match(x.stroka,stroka) != None): 
-                res = x.doSmth(stroka)
+            if (re.fullmatch(x.stroka,stroka) != None): 
+                res = x.doSmth(stroka,usr_id)
                 if (res[0] == 0):
                     return [self,res[1]]
                 else:
@@ -43,30 +43,26 @@ class Node():
 
 
 #============================================================================================
-        
+class Node1(Node):
+    def doSmth(self,comm,usr_id):
+        try:
+            os.remove(usr_id + "ses.json")
+        except:
+            pass
+        return [1, ""]     
+
+
+     
 class Node2(Node):
-    def doSmth(self,comm):
+    def doSmth(self,comm,usr_id):
         z = {"eda" : {},"last" : {},"koef" : ""}
-        with open("ses.json", "w") as my_file:
+        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
             my_file.write(json.dumps(z))
         return [1, ""]
-        
-        
-class Node3(Node):
-    def doSmth(self,comm):
-        with open("ses.json", "r") as my_file:
-            ses_json = json.loads(my_file.read())
-            
-        ses_json["uglS"] = comm
-
-        with open("ses.json", "w") as my_file:
-                my_file.write(json.dumps(ses_json))                
-        self.wrong = 0
-        return [1, ""]
-        
+              
         
 class Node4(Node):
-    def doSmth(self,comm):
+    def doSmth(self,comm,usr_id):
         r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
         r_j = r.json()
         ugl = -1 
@@ -82,50 +78,50 @@ class Node4(Node):
         if (ugl < 0):
             return [0, "Продукт не найден "]
         else:
-            with open("ses.json", "r") as my_file:
+            with open(usr_id + "ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
                 
             ses_json["last"][comm] = ugl
             
-            with open("ses.json", "w") as my_file:
+            with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
                 my_file.write(json.dumps(ses_json,ensure_ascii=False))
             return [1, "В продукте " + str(ugl) + " углеводов "]
 
 class Node5(Node):
-    def doSmth(self,comm):
-        with open("ses.json", "r") as my_file:
+    def doSmth(self,comm,usr_id):
+        with open(usr_id + "ses.json", "r", encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         lastUgl = list(ses_json["last"].values())[0]
         lastProd = list(ses_json["last"].keys())[0]
 
         ses_json["eda"][lastProd] = [lastUgl,comm]
         ses_json["last"] = {}
-        with open("ses.json", "w") as my_file:
+        with open(usr_id+"ses.json", "w",encoding='utf-8') as my_file:
             my_file.write(json.dumps(ses_json,ensure_ascii=False))
         return [1,""]
         
 class Node6(Node):
-    def doSmth(self,comm):
-        with open("ses.json", "r") as my_file:
+    def doSmth(self,comm,usr_id):
+        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         ses_json["koef"] = comm
-        with open("ses.json", "w") as my_file:
+        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
             my_file.write(json.dumps(ses_json,ensure_ascii=False))
         return [1,""]
         
 class Node6(Node):
-    def doSmth(self,comm):
-        with open("ses.json", "r") as my_file:
+    def doSmth(self,comm,usr_id):
+        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         ses_json["koef"] = comm
-        with open("ses.json", "w") as my_file:
+        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
             my_file.write(json.dumps(ses_json,ensure_ascii=False))
         return [1,""]
         
         
 class Node7(Node):
-    def doSmth(self,comm):
-        with open("ses.json", "r") as my_file:
+    def doSmth(self,comm,usr_id):
+        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         counter = 0
         for key, val in ses_json["eda"].items():
@@ -133,30 +129,27 @@ class Node7(Node):
         counter = counter * float(ses_json["koef"])
         counter = round(counter,2)
         ses_json["counter"] = counter
-        with open("ses.json", "w") as my_file:
+        with open(usr_id+"ses.json", "w",encoding='utf-8') as my_file:
             my_file.write(json.dumps(ses_json,ensure_ascii=False))
-        return [1,"Вам стоит сделать " + str(counter) + " едениц инсулина " ]
+        return [1,"Вам рекомендовано сделать " + str(counter) + " едениц инсулина " ]
         
 class FSM():
 
     def __init__(self):
-        startNode = Node("Н*н*ачало|^$","Скажите начало",1)
+        startNode = Node1("Н*н*ачало|^$","Скажите начало",1)
         diabet = Node2("Д*д*иабет","Скажите диабет для подсчета",2)
-        uroven = Node3("\d+\.*,*\d*","Скажите уровень глюкозы",3)
-        newProd = Node4(".","Скажите продукт",4)
+        newProd = Node4(".+","Скажите продукт",4)
         grams = Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5) 
         uglK = Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6)
-        calc = Node7("П*п*одсчитать","Скажите подсчитать",6)
+        calc = Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",6)
         
         self.cnode = startNode
         
         Node.connectOneWay(startNode,diabet)
         Node.connectOneWay(diabet,startNode)
         
-        Node.connectOneWay(diabet,uroven)
-        Node.connectOneWay(uroven,startNode)
         
-        Node.connectOneWay(uroven,newProd)
+        Node.connectOneWay(diabet,newProd)
         Node.connectOneWay(newProd,startNode)
         
         Node.connectOneWay(newProd,grams)
@@ -170,9 +163,8 @@ class FSM():
         Node.connectOneWay(calc,startNode)
     
     
-    def act(self,strAct):
-        l = self.cnode.next(strAct)
+    def act(self,comm,usr_id):
+        l = self.cnode.next(comm,usr_id)
         self.cnode = l[0]
-        return l[1] + self.cnode.getDiscAvNodes() 
-
+        return [l[1] + self.cnode.getDiscAvNodes(),self.cnode.stage]
         

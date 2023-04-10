@@ -1,4 +1,5 @@
 from fsm import FSM
+import pickle
 
 fsm = FSM()
 
@@ -17,6 +18,15 @@ print(fsm.act("творог"))
 
 print(fsm.act("222"))
 
-print(fsm.act("900"))
+with open('data.pickle', 'wb') as f:
+    pickle.dump(fsm, f)
+try:
+    with open('йцу.pickle', 'rb') as f:
+        res = data_new = pickle.load(f)
+except:
+    with open('data.pickle', 'wb') as f:
+    pickle.dump(fsm, f)
 
-print(fsm.act("подсчитать"))
+
+
+print(res.act("1"))
