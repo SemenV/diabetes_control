@@ -7,9 +7,16 @@ import pickle
 
 app = Flask(__name__)
 
+@app.route("/", methods=['GET'])
+def calc():
+    
+
+@app.route("/", methods=['POST'])
+def calc_ret():
+
 
    
-@app.route("/", methods=['POST'])
+@app.route("/alice", methods=['POST'])
 def indexx():
 
     with open("zapr.json", "r") as my_file:
@@ -21,8 +28,8 @@ def indexx():
 
     ou = request_data["request"]["original_utterance"]
     if (ou == "ping"):
-    zapr["response"]["text"] = "pong"
-    return jsonify(zapr)
+        zapr["response"]["text"] = "pong"
+        return jsonify(zapr)
     
     
     comm = request_data["request"]["command"]

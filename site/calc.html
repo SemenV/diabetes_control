@@ -25,9 +25,6 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	
 });
 
-var xVal = 0;
-var yVal = 100;
-var updateInterval = 1000;
 var dataLength = 50; // number of dataPoints visible at any point
 
 
@@ -36,13 +33,14 @@ var dataLength = 50; // number of dataPoints visible at any point
 		y: 1                
 	});
 	dps1.push({
-		x: 2,
-		y: 2                
+		x: 1.5,
+		y: 3                
 	});
 	dps1.push({
-		x: 3,
-		y: 1                
+		x: 2,
+		y: 4                
 	});
+
 
 chart.render();
 
@@ -56,15 +54,7 @@ chart.render();
 	});
 	dps2.push({
 		x: 2,
-		y: 2                
-	});
-		dps2.push({
-		x: 2.5,
-		y: 3                
-	});
-	dps2.push({
-		x: 3,
-		y: 1                
+		y: 4                
 	});
 
 
@@ -73,9 +63,41 @@ chart.render();
 
 }
 </script>
+
 </head>
 <body  onload="qwe()">
+<button onclick="add_button()" >add</button>
+
+
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> 
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+ 
 </body>
 </html>
+<script>
+var a = 0
+add_button = function () {
+a = a + 1;
+let btn = document.createElement("button");
+btn.innerHTML = a + "and" + (1+a);
+document.body.appendChild(btn);
+
+
+let inpp = document.createElement("input");
+inpp.type = "number";
+inpp.id = a;
+
+document.body.appendChild(inpp);
+
+a = a + 1;
+let inpp2 = document.createElement("input");
+inpp2.type = "number";
+inpp2.id = a;
+
+document.body.appendChild(inpp2);
+
+}
+
+</script>
