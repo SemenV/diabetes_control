@@ -1,4 +1,4 @@
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify , render_template, flash, session,url_for,redirect
 import requests
 import json
 import os
@@ -6,13 +6,44 @@ from fsm import FSM
 import pickle
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'wqeqweqew'
 
-@app.route("/", methods=['GET'])
-def calc():
+
+@app.route("/login", methods=['POST','GET'])
+def tlog():
+    if request.method == "POST":
+        print(request.form)
+        if len(request.form['username']) > 2:
+            flash("успешно")
+        else:
+            flash("должно быть больше 2 букв")
+            
+    if 'userIdLogged' in session:
+        return redirect(url_for('profile_day',day = '20.05.2023'))
+    elif request.method == 'POST' and request.form['username'] == 'q' and request.form['password'] == 'w':
+        session['userIdLogged'] = '1'
+        return redirect(url_for('profile_day',day='20.05.2023'))
+      
+    return render_template("login.html")
+
+
+@app.route("/profile/<day>", methods=['POST','GET'])
+def profile_day(day):
+    if 'userIdLogged' in session:
+        return render_template("profile.html",day = day)
+    else:
+        return redirect(url_for('tlog'))
     
+    
+@app.route("/logout", methods=['POST','GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('tlog'))
 
-@app.route("/", methods=['POST'])
+
+@app.route("/", methods=['POST','GET'])
 def calc_ret():
+    return render_template("calc.html")
 
 
    
@@ -62,5 +93,5 @@ def indexx():
 
 
 if __name__ == "__main__":
-    app.run(dubug=False, host='0.0.0.0')
+    app.run(dubug=True, host='0.0.0.0')
 
