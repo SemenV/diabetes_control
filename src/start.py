@@ -14,6 +14,40 @@ db_name = 'testdb'
 
 
 
+def connect_db():
+    connection = psycopg2.connect(
+    host = host,
+    user = user,
+    password = password,
+    database = db_name,
+    )
+    return connection
+
+
+
+
+def insert_in_table():
+    connection = connect_db()
+    curs = connection.cursor()
+    curs.execute(
+    "INSERT INTO mytable (idn,qwe) VALUES (5,5)"
+    )
+    connection.commit()
+    curs.close()  
+    connection.close()
+
+
+#def insert_in_table():
+#    connection = connect_db()
+#    with connection:
+#        with connection.cursor() as curs:
+#            curs.execute(
+#    "INSERT INTO mytable (idn,qwe) VALUES (5,5)"
+#    )
+#    connection.commit()
+#    cursor.close()  
+#    connection.close()
+
 
 
 
@@ -56,19 +90,7 @@ def logout():
 
 @app.route("/", methods=['POST','GET'])
 def calc_ret():
-    connection = psycopg2.connect(
-    host = host,
-    user = user,
-    password = password,
-    database = db_name
-    )
-    cursor = connection.cursor()
-    cursor.execute(
-    "INSERT INTO mytable (idn,qwe) VALUES (5,5)"
-    )
-    connection.commit()
-    cursor.close()  
-    connection.close()
+    insert_in_table()
     return render_template("calc.html")
 
 
