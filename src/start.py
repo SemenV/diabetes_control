@@ -1,9 +1,21 @@
 from flask import Flask, request,jsonify , render_template, flash, session,url_for,redirect
+import psycopg2
 import requests
 import json
 import os
 from fsm import FSM
 import pickle
+
+host = 'host.docker.internal'
+user = 'postgres'
+password = 'semen'
+db_name = 'testdb'
+
+
+
+
+
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'wqeqweqew'
@@ -29,6 +41,7 @@ def tlog():
 
 @app.route("/profile/<day>", methods=['POST','GET'])
 def profile_day(day):
+
     if 'userIdLogged' in session:
         return render_template("profile.html",day = day)
     else:
@@ -43,6 +56,19 @@ def logout():
 
 @app.route("/", methods=['POST','GET'])
 def calc_ret():
+    connection = psycopg2.connect(
+    host = host,
+    user = user,
+    password = password,
+    database = db_name
+    )
+    cursor = connection.cursor()
+    cursor.execute(
+    "INSERT INTO mytable (idn,qwe) VALUES (5,5)"
+    )
+    connection.commit()
+    cursor.close()  
+    connection.close()
     return render_template("calc.html")
 
 

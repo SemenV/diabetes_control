@@ -1,11 +1,15 @@
 version: '3'
 
 services:
+
+
   webhook:
     build: .
     image: webh
     ports:
       - 5000:5000
+    extra_hosts:
+      - "127.0.0.1:192.168.0.6"
 
   ngrok:
     image: wernight/ngrok
@@ -13,4 +17,13 @@ services:
     ports:
       - 4040:4040
     
-
+    
+    
+    
+  #our_db:
+    #ports:
+   #   - 5432:5432
+   # environment:
+   #   - POSTGRES_PASSWORD=semen
+   #   - POSTGRES_USER=postgres
+   # image: postgres:15.3-alpine
