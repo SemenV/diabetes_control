@@ -21,5 +21,7 @@ WORKDIR ./src
 RUN set FLASK_APP start.py
 ENV FLASK_APP start.py
 
-CMD ["socat", "TCP4-LISTEN:5001,reuseaddr,fork" ,"TCP:host.docker.internal:5432"]
+
+CMD sh RUN_two_cmd.sh
+#CMD ["socat", "TCP4-LISTEN:5001,reuseaddr,fork" ,"TCP:host.docker.internal:5432"]
 #CMD ["flask",  "run", "--host=0.0.0.0"]
