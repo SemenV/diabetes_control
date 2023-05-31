@@ -62,6 +62,7 @@ def print_arr(a):
 
 def getSplines(A,B,proizv):
     k=0
+    Xall = []
     for i in range(len(A)-1):
         Anew = []
         Anew.append(A[k])
@@ -87,30 +88,67 @@ def getSplines(A,B,proizv):
 
         b = np.array([matB[0], matB[1], matB[2], matB[3]])
         x = np.linalg.solve(a, b)
+        
+        Xall.append(x)
 
         print(x)
+        
+        
+    return Xall
+    
+    
+def get_spl_val(A,B,proizv,delimeter):
+    Xall = getSplines(A,B,proizv)
+    print(Xall)
+    xval = []
+    yval = []
+    for i in np.arange(0,2,delimeter):
+        xval.append(i)
+        for k in range(len(A)-1):
+            if (i >= A[k]) and (i < A[k+1]):
+
+                yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
+                print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
+                yval.append(yval_add)
+    
+    l = 0
+    print (xval)
+    print(yval)
+    
+    print (len(xval))
+    print(len(yval))
+    return [xval, yval]
+    
+def get_spl_prepered(A,B,proizv,delimeter):
+    ret_val = []
+    all_values = get_spl_val(A,B,proizv,delimeter)
+    for i in range(len(all_values[0])-1):
+        ret_val.append({"x": all_values[0][i], "y" : all_values[1][i]})
+    return ret_val
+
+
     
     
     
-a = []
-a.append(1)
-a.append(3)
-a.append(4)
-a.append(6)
+#a = []
+#a.append(0)
+#a.append(1)
+#a.append(4)
+#a.append(6)
 
 
-b = []
-b.append(1)
-b.append(3)
-b.append(2)
-b.append(3)
+#b = []
+#b.append(0)
+#b.append(3)
+#b.append(2)
+#b.append(3)
 
 
-proizv = []
-proizv.append(0)
-proizv.append(0)
-proizv.append(-1.6197)
-proizv.append(0)
+#proizv = []
+#proizv.append(0)
+#proizv.append(0)
+#proizv.append(-1.6197)
+#proizv.append(0)
 
 
-getSplines(a,b,proizv)
+#get_spl_prepered(a,b,proizv,0.1)

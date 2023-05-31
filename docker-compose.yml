@@ -8,8 +8,9 @@ services:
     image: webh
     ports:
       - 5000:5000
-    extra_hosts:
-      - "127.0.0.1:192.168.0.6"
+      - 5001:5001
+      - 5432:5432
+
 
   ngrok:
     image: wernight/ngrok

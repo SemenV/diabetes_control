@@ -5,7 +5,7 @@
 qwe = function () {
 
 var dps1 = [];
-var dps2 = [];
+var dps2 = {{  session['tmp_values']|safe }};
 var chart = new CanvasJS.Chart("chartContainer", {
 	exportEnabled: true,
 	title :{
@@ -42,21 +42,6 @@ var dataLength = 50; // number of dataPoints visible at any point
 	});
 
 
-chart.render();
-
-	dps2.push({
-		x: 1,
-		y: 1                
-	});
-	dps2.push({
-		x: 1.5,
-		y: 3                
-	});
-	dps2.push({
-		x: 2,
-		y: 4                
-	});
-
 
 
 chart.render();
@@ -66,37 +51,65 @@ chart.render();
 
 </head>
 <body  onload="qwe()">
-<button onclick="add_button()" >add</button>
+
+{% for msg in get_flashed_messages()%}
+<div class = "flash"> {{msg}}</div>
+{% endfor %}
+<button onclick="add_triple_val()" >add</button>
+<button onclick="chart.render();" >render</button>
+
+
+
 
 
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
+<form action="/" method = "post" id="parent">
+	<div><input type = "submit" value = "submit"> </div>
+	<div><label>x1 <input type = "text" name = "x1"/> </label></div>
+	<div><label>y1 <input type = "text" name = "y1"/> </label> </div>
+	<div><label>yp1 <input type = "text" name = "yp1"/> </label> </div>
+	<input type="hidden" name="counter" id = "hidden_couner" value= "1" >
+	
+	
+	
+	
 
+</form>
  
 </body>
 </html>
 <script>
-var a = 0
-add_button = function () {
+let parent = document.querySelector('#parent');
+
+var a = 1
+add_triple_val = function () {
+
 a = a + 1;
-let btn = document.createElement("button");
-btn.innerHTML = a + "and" + (1+a);
-document.body.appendChild(btn);
+add_button("x");
+add_button("y");
+add_button("yp");
+document.getElementById("hidden_couner").value = a;
+
+}
 
 
+
+add_button = function (xyp) {
+
+let outdiv = document.createElement("div");
+let outlab = document.createElement("label");
 let inpp = document.createElement("input");
-inpp.type = "number";
-inpp.id = a;
+inpp.type = "text";
+inpp.name = xyp + a;
+outlab.textContent  = xyp + a;
+outlab.appendChild(inpp);
+outdiv.appendChild(outlab);
 
-document.body.appendChild(inpp);
 
-a = a + 1;
-let inpp2 = document.createElement("input");
-inpp2.type = "number";
-inpp2.id = a;
+parent.appendChild(outdiv);
 
-document.body.appendChild(inpp2);
 
 }
 
