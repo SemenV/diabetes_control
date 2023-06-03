@@ -1,6 +1,7 @@
 from DataBaseExec import *
 from datetime import date, timedelta, datetime
 import psycopg2
+import json
 
 
 host = '127.0.0.1'
@@ -15,6 +16,7 @@ def connect_db():
     user = user,
     password = password,
     database = db_name,
+    port = 5001
     )
     return connection
     
@@ -24,4 +26,9 @@ db = connect_db()
 dbase = DataBaseExec(db)
 dt = datetime.now()
 print (dt)
-print(dbase.connect_register_id_alice('LOL'))
+z = {"eda" : {},"last" : {},"koef" : ""}
+
+
+
+print(bool(dbase.insertTmpRegIdAlice('тест_только_алисы')))
+db.rollback()

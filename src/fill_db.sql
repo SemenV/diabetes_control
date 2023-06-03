@@ -1,6 +1,8 @@
 TRUNCATE TABLE people CASCADE;
 TRUNCATE TABLE all_nagruzka CASCADE ;
 TRUNCATE TABLE eda CASCADE ;
+TRUNCATE TABLE eda_tmp CASCADE ;
+TRUNCATE TABLE reg_tmp CASCADE ;
 
 
 
@@ -44,7 +46,8 @@ UPDATE people SET id_alice = 'alice123' WHERE login = 'таня' AND passwordd =
 UPDATE people SET login = 'lkj', passwordd = 'lkj' WHERE id_alice = 'тест_только_алисы';
 
 
-
+INSERT INTO eda_tmp (id_alice,current_food) VALUES ('alice123', '{молоко;сметана}')
+ 
 
 
 

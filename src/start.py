@@ -33,18 +33,6 @@ def get_database():
 
 
 
-
-def insert_in_table():
-    connection = connect_db()
-    curs = connection.cursor()
-    curs.execute(
-    "INSERT INTO mytable (idn,qwe) VALUES (5,5)"
-    )
-    connection.commit()
-    curs.close()  
-    connection.close()
-
-
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'wqeqweqew'
 app.debug = True
@@ -137,7 +125,7 @@ def calc_ret(nagruzka):
 
 
    
-@app.route("/alice", methods=['POST'])
+@app.route("/alice", methods=['GET','POST'])
 def indexx():
 
     with open("zapr.json", "r") as my_file:
@@ -175,7 +163,10 @@ def indexx():
         zapr["response"]["text"] = "Я помогу подсчитать необходимое количество инсулина"
         return jsonify(zapr)
     else:
-        stroka = usr_fsm.act(comm,usr_id)
+    
+    
+        db = get_database()
+        stroka = usr_fsm.act(comm,usr_id,db)
         with open(usr_id + ".pickle", 'wb') as f:
             pickle.dump(usr_fsm, f)
         zapr["response"]["text"] = stroka[0]

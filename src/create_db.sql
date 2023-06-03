@@ -25,4 +25,21 @@ CREATE TABLE IF NOT EXISTS eda (
 	FOREIGN KEY (useid) REFERENCES people (idd),
 	FOREIGN KEY (ch_nagruzka) REFERENCES all_nagruzka (nagruzka_name)
 );	
+
+CREATE TABLE IF NOT EXISTS eda_tmp ( 
+	ide SERIAL PRIMARY KEY,
+	id_alice VARCHAR(1024) UNIQUE, 
+	current_food VARCHAR(4000),  
+	FOREIGN KEY (id_alice) REFERENCES people (id_alice)
+);
+
+CREATE TABLE IF NOT EXISTS reg_tmp ( 
+	ide SERIAL PRIMARY KEY,
+	id_alice VARCHAR(1024) UNIQUE, 
+	login VARCHAR(100) UNIQUE, 
+	passwordd VARCHAR(100),
+	FOREIGN KEY (id_alice) REFERENCES people (id_alice)
+);
+
+
 	

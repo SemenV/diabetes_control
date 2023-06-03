@@ -1,4 +1,7 @@
 from datetime import date, timedelta, datetime
+import psycopg2
+from psycopg2.errorcodes import UNIQUE_VIOLATION
+from psycopg2 import errors
 
 class DataBaseExec:
     def __init__(self, db):
@@ -6,10 +9,15 @@ class DataBaseExec:
         self.__cur = db.cursor()
         
         
-    def connect_register_id_alice(self,id_alice):
-        sql = "INSERT INTO people (id_alice) VALUES ('" + id_alice + "');"
-        self.__cur.execute(sql)
-        self.__db.commit()
+    def register_id_alice(self,id_alice):
+        try:
+            sql = "INSERT INTO people (id_alice) VALUES ('" + id_alice + "');"
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
         
     def getIdByLogin(self, login, password):
         sql = "SELECT idd FROM people WHERE login = '" + login + "' AND passwordd = '" + password + "'"
@@ -35,16 +43,80 @@ class DataBaseExec:
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
+    
+    def delTmpReg(self,id_alice):
+        try: 
+            sql = "DELETE FROM reg_tmp WHERE id_alice = '" + id_alice + "';"
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
+    
+
+    def insertTmpRegIdAlice(self,id_alice):
+        sql = "INSERT INTO reg_tmp (id_alice) VALUES ('" + id_alice + "');"
+        self.__cur.execute(sql)
+        self.__db.commit()
+    
+    
+    def check_login(self,login):
+        sql = "SELECT 1 FROM people WHERE login = '" + login + "'"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
         
-    def connect_login_psw_to_alice(self,login, password, userIdLogged ):
-        sql = "UPDATE people SET login = '" + login + "', passwordd = '" + password + "' WHERE id_alice = '" + userIdLogged + "'"
+       
+    def setTmpLogin(self,id_alice, login):
+        sql = "UPDATE reg_tmp SET login = '" + login + "' WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        self.__db.commit()
+    
+    def getTmpLogin(self,id_alice):
+        sql = "SELECT login FROM reg_tmp WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+        
+    def setTmpPsd(self,id_alice, passwordd):
+        sql = "UPDATE reg_tmp SET passwordd = '" + passwordd + "' WHERE id_alice = '" + id_alice + "'"
         self.__cur.execute(sql)
         self.__db.commit()
         
         
-
+    def connect_login_psw_to_alice(self,login, password, id_alice ):
+        sql = "UPDATE people SET login = '" + login + "', passwordd = '" + password + "' WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        self.__db.commit()
         
-
+    def getTmpFood(self, id_alice):
+        sql = "SELECT current_food FROM eda_tmp WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+    def setTmpFood(self,id_alice,current_food):
+        sql = "INSERT INTO eda_tmp (id_alice,current_food) VALUES ('" + id_alice + "' , '" + current_food + "');"
+        self.__cur.execute(sql)
+        self.__db.commit()
+        
+    def deleteFromTmpTbale(self,id_alice):
+        try: 
+            sql = "DELETE FROM eda_tmp WHERE id_alice = '" + id_alice + "';"
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
+    
+        
+    def updateTmpFood(self,id_alice,current_food):
+        sql = "UPDATE eda_tmp SET current_food = '" + current_food + "' WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        self.__db.commit()
 
 
 

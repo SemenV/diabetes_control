@@ -1,7 +1,14 @@
 import re
-import requests
 import json
 import os
+from DataBaseExec import *
+import psycopg2
+from psycopg2.errorcodes import UNIQUE_VIOLATION
+from psycopg2 import errors
+import requests 
+import sys
+
+
 
 class Node():
     
@@ -11,7 +18,7 @@ class Node():
         self.opisanie = opisanie
         self.stage = stage
 
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         return [1,""]
     
     @staticmethod
@@ -19,10 +26,10 @@ class Node():
         node1.nodes.append(node2)
         
         
-    def next(self,stroka,usr_id):
+    def next(self,stroka,usr_id,db):
         for x in self.nodes:                
             if (re.fullmatch(x.stroka,stroka) != None): 
-                res = x.doSmth(stroka,usr_id)
+                res = x.doSmth(stroka,usr_id,db)
                 if (res[0] == 0):
                     return [self,res[1]]
                 else:
@@ -44,8 +51,8 @@ class Node():
 
 #============================================================================================
 class Node1(Node):
-    def doSmth(self,comm,usr_id):
-        try:
+    def doSmth(self,comm,usr_id,db):
+        try: 
             os.remove(usr_id + "ses.json")
         except:
             pass
@@ -54,15 +61,18 @@ class Node1(Node):
 
      
 class Node2(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        dbase.deleteFromTmpTbale(usr_id)
+        dbase.register_id_alice(usr_id)
         z = {"eda" : {},"last" : {},"koef" : ""}
-        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
-            my_file.write(json.dumps(z))
+        dbase.setTmpFood(usr_id,json.dumps(z))
         return [1, ""]
+        
               
         
 class Node4(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
         r_j = r.json()
         ugl = -1 
@@ -78,19 +88,41 @@ class Node4(Node):
         if (ugl < 0):
             return [0, "Продукт не найден "]
         else:
-            with open(usr_id + "ses.json", "r",encoding='utf-8') as my_file:
-                ses_json = json.loads(my_file.read())
-                
-            ses_json["last"][comm] = ugl
+            dbase = DataBaseExec(db)
+            ses_json = dbase.getTmpFood(usr_id)[0][0]
             
-            with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
-                my_file.write(json.dumps(ses_json,ensure_ascii=False))
+            #with open(usr_id + "ses.json", "r",encoding='utf-8') as my_file:
+            #    ses_json = json.loads(my_file.read())
+                
+                #проблемы здесь
+            ses_json["last"]["comm"] = ugl
+            
+            #with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
+            #    my_file.write(json.dumps(ses_json,ensure_ascii=False))
+            
+            
+            dbase.setTmpFood(usr_id,json.dumps(ses_json))
+            
             return [1, "В продукте " + str(ugl) + " углеводов "]
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
 class Node5(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         with open(usr_id + "ses.json", "r", encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
+                
+                
+                
+                
         lastUgl = list(ses_json["last"].values())[0]
         lastProd = list(ses_json["last"].keys())[0]
 
@@ -101,7 +133,7 @@ class Node5(Node):
         return [1,""]
         
 class Node6(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         ses_json["koef"] = comm
@@ -110,7 +142,7 @@ class Node6(Node):
         return [1,""]
         
 class Node6(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         ses_json["koef"] = comm
@@ -120,7 +152,7 @@ class Node6(Node):
         
         
 class Node7(Node):
-    def doSmth(self,comm,usr_id):
+    def doSmth(self,comm,usr_id,db):
         with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
                 ses_json = json.loads(my_file.read())
         counter = 0
@@ -133,6 +165,37 @@ class Node7(Node):
             my_file.write(json.dumps(ses_json,ensure_ascii=False))
         return [1,"Вам рекомендовано сделать " + str(counter) + " едениц инсулина " ]
         
+        
+class Node100(Node):
+    def doSmth(self,comm,usr_id,db):
+        return [1,""]
+        
+class Node101(Node):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        dbase.delTmpReg(usr_id)
+        dbase.insertTmpRegIdAlice(usr_id)
+        return [1,""]  
+
+class Node102(Node):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        if (bool(dbase.check_login(usr_id))):
+            return [0,"Уже есть такой пользователь"]
+        else: 
+            dbase.setTmpLogin(usr_id, comm)
+            return [1,""]  
+
+
+class Node103(Node):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        tmpLogin = dbase.getTmpLogin(usr_id)[0][0]
+        dbase.connect_login_psw_to_alice(tmpLogin, comm, usr_id)
+        return [1,"Ваш логин и пароль были обновлены."]             
+
+
+        
 class FSM():
 
     def __init__(self):
@@ -141,7 +204,12 @@ class FSM():
         newProd = Node4(".+","Скажите продукт",4)
         grams = Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5) 
         uglK = Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6)
-        calc = Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",6)
+        calc = Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",7)
+        
+        setings = Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100)
+        register = Node101("Р*р*егистрация","Скажите регистрация",101)
+        say_login = Node102("\w*","Скажите логин",102)
+        say_psd = Node103("\w*","Скажите Пароль",103)
         
         self.cnode = startNode
         
@@ -163,8 +231,24 @@ class FSM():
         Node.connectOneWay(calc,startNode)
     
     
-    def act(self,comm,usr_id):
-        l = self.cnode.next(comm,usr_id)
+    
+    
+        Node.connectOneWay(startNode,setings)
+        Node.connectOneWay(setings,startNode)
+        
+        Node.connectOneWay(setings,register)
+        Node.connectOneWay(register,startNode)
+        
+        Node.connectOneWay(register,say_login)
+        Node.connectOneWay(say_login,startNode)
+        
+        Node.connectOneWay(say_login,say_psd)
+        Node.connectOneWay(say_psd,startNode)
+    
+    
+    
+    def act(self,comm,usr_id,db):
+        l = self.cnode.next(comm,usr_id,db)
         self.cnode = l[0]
         return [l[1] + self.cnode.getDiscAvNodes(),self.cnode.stage]
         
