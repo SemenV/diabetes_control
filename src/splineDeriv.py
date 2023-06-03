@@ -102,14 +102,20 @@ def get_spl_val(A,B,proizv,delimeter):
     print(Xall)
     xval = []
     yval = []
-    for i in np.arange(0,2,delimeter):
+    print("============================  " + str(A[len(A)-1]+delimeter))
+    for i in np.arange(0,A[len(A)-1]+delimeter,delimeter):
+        print("=======xavll =   "+ str(i))
         xval.append(i)
         for k in range(len(A)-1):
-            if (i >= A[k]) and (i < A[k+1]):
+            if ((i >= A[k]) and (i < A[k+1])):
 
                 yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
                 print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
                 yval.append(yval_add)
+        if (i >= A[len(A)-1]):
+            yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
+            print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
+            yval.append(yval_add)
     
     l = 0
     print (xval)

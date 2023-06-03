@@ -4,7 +4,11 @@
 	<title>Example</title>
 </head>
 <body>
-Пользователь {{JSON.stringify(session['userIdLogged'])}} Day = {{day}}
+
+{% for msg in get_flashed_messages()%}
+<div class = "flash"> {{msg}}</div>
+{% endfor %}
+Пользователь {{session['userIdLogged']}} Day = {{day}}
 <form action="/logout" method = "post">
 	<div><input type = "submit" value = "Log out"></div>
 </form>

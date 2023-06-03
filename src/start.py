@@ -3,14 +3,16 @@ import psycopg2
 import requests
 import json
 import os
+from datetime import date, timedelta, datetime
 from fsm import FSM
+from DataBaseExec import *
 import pickle
 from  splineDeriv import * 
 
 host = 'host.docker.internal'
 user = 'postgres'
 password = 'semen'
-db_name = 'testdb'
+db_name = 'uglevodi'
 
 
 
@@ -56,19 +58,17 @@ def close_db(error):
 @app.route("/login", methods=['POST','GET'])
 def tlog():
     if request.method == "POST":
-        print(request.form)
-        if len(request.form['username']) > 2:
-            flash("успешно")
-        else:
-            flash("должно быть больше 2 букв")
+        db = get_database()
+        dbase = DataBaseExec(db)
+        IDDB = dbase.getIdByLogin(request.form['username'],request.form['password'])
+        session['userIdLogged'] = IDDB[0][0]
+        dt = datetime.now()
+        flash(dbase.getDayMenu(session['userIdLogged'],dt)    )
             
     if 'userIdLogged' in session:
         return redirect(url_for('profile_day',day = '20.05.2023'))
-    elif request.method == 'POST' and request.form['username'] == 'q' and request.form['password'] == 'w':
-        session['userIdLogged'] = '1'
-    elif request.method == 'POST' and request.form['username'] == 'т' and request.form['password'] == 'т':
-        session['userIdLogged'] = '2'
-        return redirect(url_for('profile_day',day='20.05.2023'))
+ 
+      
       
     return render_template("login.html")
 
@@ -87,9 +87,16 @@ def logout():
     session.clear()
     return redirect(url_for('tlog'))
 
-
 @app.route("/", methods=['POST','GET'])
-def calc_ret():
+def send_to_calc_ret():
+    return redirect(url_for('calc_ret',nagruzka = "hod"))
+
+
+@app.route("/<nagruzka>", methods=['POST','GET'])
+def calc_ret(nagruzka):
+    if request.method == "GET":
+        return render_template("calc.html",nagruzka = nagruzka )
+
     session['tmp_values'] = ""
     session['main_values'] = ""
     session['counter'] = ""
@@ -119,17 +126,14 @@ def calc_ret():
         
         all_values = get_spl_prepered(A,B,proizv,0.1)
             
-            
-        
-        
-        
+
         session['tmp_values'] = json.dumps(all_values)
         session['main_values'] = main_values
         session.modified = True
         flash(' '.join([str(elem) for elem in main_values]))
 
 
-    return render_template("calc.html")
+    return render_template("calc.html", nagruzka = nagruzka)
 
 
    

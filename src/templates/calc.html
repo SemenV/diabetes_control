@@ -25,7 +25,6 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	
 });
 
-var dataLength = 50; // number of dataPoints visible at any point
 
 
 	dps1.push({
@@ -50,8 +49,8 @@ chart.render();
 </script>
 
 </head>
-<body  onload="qwe()">
-
+<body  onload="qwe(); setNagr();">
+nagruzka = {{nagruzka}}
 {% for msg in get_flashed_messages()%}
 <div class = "flash"> {{msg}}</div>
 {% endfor %}
@@ -59,14 +58,19 @@ chart.render();
 <button onclick="chart.render();" >render</button>
 
 
-
+<form action="{{nagruzka}}" method = "get" id="nagruzka">
+<select id = "select_nagruzka" onchange="changeNagr(this)">
+  <option value = "hod">hod</option>
+  <option value = "beg">beg</option>
+</select>
+</form>
 
 
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-<form action="/" method = "post" id="parent">
-	<div><input type = "submit" value = "submit"> </div>
+<form action="{{nagruzka}}" method = "post" id="parent">
+	<div><input type = "submit" value = "submit" onSubmit = "chooseNagr4act()"> </div>
 	<div><label>x1 <input type = "text" name = "x1"/> </label></div>
 	<div><label>y1 <input type = "text" name = "y1"/> </label> </div>
 	<div><label>yp1 <input type = "text" name = "yp1"/> </label> </div>
@@ -110,6 +114,25 @@ outdiv.appendChild(outlab);
 
 parent.appendChild(outdiv);
 
+
+}
+
+</script>
+
+<script>
+
+function changeNagr(val) {
+document.getElementById('nagruzka').setAttribute('action', val.value);
+document.getElementById('parent').setAttribute('action', val.value );
+val.form.submit();
+}
+
+function setNagr() {
+const $select = document.querySelector('#select_nagruzka');
+ $select.value = '{{nagruzka}}'
+
+//document.getElementById('select_nagruzka').setAttribute('value', );
+document.getElementById('parent').setAttribute('action', {{nagruzka}} );
 
 }
 
