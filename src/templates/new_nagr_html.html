@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+qwe = function () {
+
+var dps1 = [];
+var dps2 = {{  session['tmp_values']|safe }};
+var chart = new CanvasJS.Chart("chartContainer", {
+	exportEnabled: true,
+	title :{
+		text: "ваша нагрузка"
+	},
+	data: [{
+		type: "line",
+		markerSize: 0,
+		dataPoints: dps2 
+	},
+	{
+	type: "scatter",
+		toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+		dataPoints: dps1
+	
+	}]
+	
+});
+
+
+
+	dps1.push({
+		x: 1,
+		y: 1                
+	});
+	dps1.push({
+		x: 1.5,
+		y: 3                
+	});
+	dps1.push({
+		x: 2,
+		y: 4                
+	});
+
+
+
+
+chart.render();
+
+}
+</script>
+
+</head>
+<body  onload="qwe(); setDefaultInputVal();">
+
+{% for msg in get_flashed_messages()%}
+<div class = "flash"> {{msg}}</div>
+{% endfor %}
+
+<button onclick="chart.render();" >render</button>
+
+
+
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<button onclick="add_triple_val()" >add</button>
+<form action="/new_nagr" method = "post" id="parent">
+	<div><input type = "submit" value = "submit"> </div>
+	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie"/> </label></div>
+	<div><label>Сохранить<input type="checkbox" id="savebtn" name="savebtn"> </label></div>
+	
+	{% for point in range(0,session['counter'])%}
+	
+	
+	<div><label>x{{point}} <input type = "text"  id = "x{{point}}" name = "x{{point}}"/> </label></div>
+	<div><label>y{{point}} <input type = "text"  id  = "y{{point}}" name  = "y{{point}}"/> </label> </div>
+	<div><label>yp{{point}} <input type = "text" id = "yp{{point}}" name = "yp{{point}}"/> </label> </div>
+	
+	{% endfor %}
+	
+	
+	<input type="hidden" name="counter" id = "hidden_couner" value= "{{session['counter']}}" >
+	
+	
+	
+	
+
+</form>
+ 
+</body>
+</html>
+<script>
+let parent = document.querySelector('#parent');
+
+var a = parseInt(document.getElementById("hidden_couner").value);
+add_triple_val = function () {
+
+
+add_button("x");
+add_button("y");
+add_button("yp");
+a = a + 1;
+document.getElementById("hidden_couner").value = a;
+
+
+}
+
+
+
+add_button = function (xyp) {
+
+let outdiv = document.createElement("div");
+let outlab = document.createElement("label");
+let inpp = document.createElement("input");
+inpp.type = "text";
+inpp.name = xyp + a;
+outlab.textContent  = xyp + a;
+outlab.appendChild(inpp);
+outdiv.appendChild(outlab);
+
+
+parent.appendChild(outdiv);
+
+
+}
+
+</script>
+
+<script>
+
+function changeNagr(val) {
+document.getElementById('nagruzka').setAttribute('action', val.value);
+document.getElementById('parent').setAttribute('action', val.value );
+val.form.submit();
+}
+
+
+
+
+
+var aa = 0
+allMainValues = {{session['main_values']}}
+function setDefaultInputVal() {
+var ab = 0
+for (aa = 0; aa < {{session['counter']|safe}}; aa = aa + 1) {
+
+
+	document.getElementById("x" + aa).value = allMainValues[ab];
+	document.getElementById("y" + aa).value = allMainValues[ab+1];
+	document.getElementById("yp" + aa).value = allMainValues[ab+2];
+	ab  = ab + 3;
+	
+};
+
+
+
+};
+
+
+function test(){
+document.getElementById("x1").value = 1;
+
+};
+
+
+
+</script>

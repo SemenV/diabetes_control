@@ -1,9 +1,12 @@
+CREATE TYPE ch_role_enum AS ENUM ('user', 'admin');
+
 CREATE TABLE IF NOT EXISTS people
 (
     idd  SERIAL PRIMARY KEY,
     login VARCHAR(100) UNIQUE, 
     passwordd VARCHAR(100),
-	id_alice VARCHAR(1024) UNIQUE
+	id_alice VARCHAR(1024) UNIQUE,
+	ch_role ch_role_enum
 );
 
 

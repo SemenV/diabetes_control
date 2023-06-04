@@ -77,52 +77,108 @@ def logout():
 
 @app.route("/", methods=['POST','GET'])
 def send_to_calc_ret():
-    return redirect(url_for('calc_ret',nagruzka = "hod"))
+    return redirect(url_for('tlog'))
+
+
+@app.route("/new_nagr", methods=['POST','GET'])
+def new_nagr():
+    if 'userIdLogged' in session:
+        session['tmp_values'] = ""
+        session['main_values'] = ""
+        session['counter'] = 0
+        
+        if request.method == "GET":
+            return render_template("new_nagr_html.html")
+
+
+        if request.method == "POST":
+            counter = int(request.form.get('counter'))
+            session['counter'] = counter
+            main_values = []
+            A = []
+            B = []
+            proizv = []
+            for i in range(counter):
+                x = float(request.form.get('x' + str(i)))
+                A.append(x)
+                main_values.append(x)
+                y = float(request.form.get('y' + str(i)))
+                B.append(y)
+                main_values.append(y)
+                yp = float(request.form.get('yp' + str(i)))
+                proizv.append(yp)
+                main_values.append(yp)
+
+            
+            
+            all_values = get_spl_prepered(A,B,proizv,0.1)
+                
+
+            session['tmp_values'] = json.dumps(all_values)
+            session['main_values'] = main_values
+            session.modified = True
+            flash(' '.join([str(elem) for elem in main_values]))
+            if (request.form.get("savebtn") != None):
+                db = get_database()
+                dbase = DataBaseExec(db)
+                userIdLogged = session['userIdLogged']
+                nazvanie = request.form['nazvanie']
+                dbase.setNagruzka(str(userIdLogged),nazvanie,json.dumps(main_values, ensure_ascii=False))
+
+        return render_template("new_nagr_html.html")
+            
+    else:
+        return redirect(url_for('tlog'))
 
 
 @app.route("/nagr/<nagruzka>", methods=['POST','GET'])
 def calc_ret(nagruzka):
-    if request.method == "GET":
-        return render_template("calc.html",nagruzka = nagruzka )
+    if 'userIdLogged' in session:
+        session['tmp_values'] = ""
+        session['main_values'] = ""
+        session['counter'] = ""
+        
+        if request.method == "GET":
+            return render_template("calc.html",nagruzka = nagruzka )
 
-    session['tmp_values'] = ""
-    session['main_values'] = ""
-    session['counter'] = ""
-    
-    db = get_database()
-    if request.method == "POST":
-        counter = request.form['counter']
-        session['counter'] = counter
-        main_values = []
-        tmp_values = []
-        A = []
-        B = []
-        proizv = []
-        for i in range(int(counter)):
-            i = i + 1;
-            x = float(request.form['x' + str(i)])
-            A.append(x)
-            main_values.append(x)
-            y = float(request.form['y' + str(i)])
-            B.append(y)
-            main_values.append(y)
-            yp = float(request.form['yp' + str(i)])
-            proizv.append(yp)
-            main_values.append(yp)
-            tmp_values.append({"x": x, "y" : y})
+
         
-        
-        all_values = get_spl_prepered(A,B,proizv,0.1)
+        db = get_database()
+        if request.method == "POST":
+            counter = request.form['counter']
+            session['counter'] = counter
+            main_values = []
+            tmp_values = []
+            A = []
+            B = []
+            proizv = []
+            for i in range(int(counter)):
+                i = i + 1;
+                x = float(request.form['x' + str(i)])
+                A.append(x)
+                main_values.append(x)
+                y = float(request.form['y' + str(i)])
+                B.append(y)
+                main_values.append(y)
+                yp = float(request.form['yp' + str(i)])
+                proizv.append(yp)
+                main_values.append(yp)
+                tmp_values.append({"x": x, "y" : y})
             
+            
+            all_values = get_spl_prepered(A,B,proizv,0.1)
+                
 
-        session['tmp_values'] = json.dumps(all_values)
-        session['main_values'] = main_values
-        session.modified = True
-        flash(' '.join([str(elem) for elem in main_values]))
+            session['tmp_values'] = json.dumps(all_values)
+            session['main_values'] = main_values
+            session.modified = True
+            flash(' '.join([str(elem) for elem in main_values]))
 
-
-    return render_template("calc.html", nagruzka = nagruzka)
-
+        return render_template("calc.html", nagruzka = nagruzka)
+        
+    else:
+        return redirect(url_for('tlog'))
+        
 
    
 @app.route("/alice", methods=['GET','POST'])

@@ -11,13 +11,18 @@ class DataBaseExec:
         
     def register_id_alice(self,id_alice):
         try:
-            sql = "INSERT INTO people (id_alice) VALUES ('" + id_alice + "');"
+            sql = "INSERT INTO people (id_alice,ch_role) VALUES ('" + id_alice + "' , 'user' );"
             self.__cur.execute(sql)
         except Exception as e:
             self.__db.rollback()
             print(e)
         else:
             self.__db.commit()
+            
+            
+            
+            
+         
         try:
             sql = "INSERT INTO all_nagruzka (useid, nagruzka_name) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'new')" 
             self.__cur.execute(sql)
@@ -47,6 +52,13 @@ class DataBaseExec:
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
+        
+        
+        #change
+    def setNagruzka(self, useid, nagruzka_name, nagruzka):
+        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "');"
+        self.__cur.execute(sql)
+        self.__db.commit()
         
     #зачем ?    
     def getIdByAlice(self, id_alice):

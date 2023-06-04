@@ -7,11 +7,10 @@ TRUNCATE TABLE reg_tmp CASCADE ;
 
 
 
-INSERT  INTO people (login, passwordd,id_alice) VALUES ('таня','т', 'u432');
-INSERT  INTO people (login, passwordd,id_alice) VALUES ('q','w', '1');
-INSERT  INTO people (login, passwordd,id_alice) VALUES ('семен3','семен', 'qwerty');
+INSERT  INTO people (login, passwordd,id_alice,ch_role) VALUES ('таня','т', 'u432','user');
+INSERT  INTO people (login, passwordd,id_alice,ch_role) VALUES ('q','w', '1','admin');
+INSERT  INTO people (login, passwordd,id_alice,ch_role) VALUES ('семен3','семен', 'qwerty','user');
 INSERT  INTO people (id_alice) VALUES ('тест_только_алисы');
-INSERT  INTO people (login, passwordd) VALUES ('тест_логина','фыв');
 
 
 INSERT  INTO all_nagruzka (useid, nagruzka_name,nagruzka) VALUES (
