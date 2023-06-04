@@ -48,7 +48,7 @@ def tlog():
     if request.method == "POST":
         db = get_database()
         dbase = DataBaseExec(db)
-        IDDB = dbase.getIdByLogin(request.form['username'],request.form['password'])
+        IDDB = dbase.getIdByLoginPsw(request.form['username'],request.form['password'])
         session['userIdLogged'] = IDDB[0][0]
         dt = datetime.now()
         flash(dbase.getDayMenu(session['userIdLogged'],dt)    )
@@ -80,7 +80,7 @@ def send_to_calc_ret():
     return redirect(url_for('calc_ret',nagruzka = "hod"))
 
 
-@app.route("/<nagruzka>", methods=['POST','GET'])
+@app.route("/nagr/<nagruzka>", methods=['POST','GET'])
 def calc_ret(nagruzka):
     if request.method == "GET":
         return render_template("calc.html",nagruzka = nagruzka )
@@ -127,7 +127,7 @@ def calc_ret(nagruzka):
    
 @app.route("/alice", methods=['GET','POST'])
 def indexx():
-
+    db = get_database()
     with open("zapr.json", "r") as my_file:
         zapr_json = my_file.read()
 
@@ -146,9 +146,10 @@ def indexx():
     usr_fsm = 0
     try:
         with open(usr_id + ".pickle", 'rb') as f:
-            usr_fsm = data_new = pickle.load(f)
+            usr_fsm  = pickle.load(f)
     except:
         usr_fsm = FSM()
+        strokaStage = usr_fsm.act("начало",usr_id,db)
         with open(usr_id + ".pickle", 'wb') as f:
             pickle.dump(usr_fsm, f)
     
@@ -165,7 +166,7 @@ def indexx():
     else:
     
     
-        db = get_database()
+
         stroka = usr_fsm.act(comm,usr_id,db)
         with open(usr_id + ".pickle", 'wb') as f:
             pickle.dump(usr_fsm, f)

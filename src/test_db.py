@@ -30,5 +30,6 @@ z = {"eda" : {},"last" : {},"koef" : ""}
 
 
 
-print(bool(dbase.insertTmpRegIdAlice('тест_только_алисы')))
-db.rollback()
+#print(bool(dbase.insertTmpRegIdAlice('тест_только_алисы')))
+#db.rollback()
+print(dbase.getNagruzkaNames("3"))

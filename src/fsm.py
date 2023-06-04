@@ -52,6 +52,7 @@ class Node():
 #============================================================================================
 class Node1(Node):
     def doSmth(self,comm,usr_id,db):
+        dbase.register_id_alice(usr_id)
         try: 
             os.remove(usr_id + "ses.json")
         except:
@@ -64,8 +65,7 @@ class Node2(Node):
     def doSmth(self,comm,usr_id,db):
         dbase = DataBaseExec(db)
         dbase.deleteFromTmpTbale(usr_id)
-        dbase.register_id_alice(usr_id)
-        z = {"eda" : {},"last" : {},"koef" : ""}
+        z = {"eda" : {},"last" : {},"koef" : "", "nagruzka" : {}}
         dbase.setTmpFood(usr_id,json.dumps(z))
         return [1, ""]
         
@@ -77,8 +77,13 @@ class Node4(Node):
         r_j = r.json()
         ugl = -1 
         i = 0;
+        rangeAmount = 0
+        if (r_j["page_count"] > 5):
+            rangeAmount = 5
+        else:
+            rangeAmount = r_j["page_count"]
         
-        for i in range(r_j["page_count"]):
+        for i in range(rangeAmount):
             try: r_j["products"][i]["nutriments"]["carbohydrates"]
             except:
                 i = i + 1
@@ -89,81 +94,65 @@ class Node4(Node):
             return [0, "Продукт не найден "]
         else:
             dbase = DataBaseExec(db)
-            ses_json = dbase.getTmpFood(usr_id)[0][0]
-            
-            #with open(usr_id + "ses.json", "r",encoding='utf-8') as my_file:
-            #    ses_json = json.loads(my_file.read())
-                
-                #проблемы здесь
-            ses_json["last"]["comm"] = ugl
-            
-            #with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
-            #    my_file.write(json.dumps(ses_json,ensure_ascii=False))
-            
-            
-            dbase.setTmpFood(usr_id,json.dumps(ses_json))
-            
+            ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+            ses_json["last"][comm] = ugl
+
+            dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
             return [1, "В продукте " + str(ugl) + " углеводов "]
-            
-            
-            
-            
-            
-            
-            
-            
-            
             
 
 class Node5(Node):
     def doSmth(self,comm,usr_id,db):
-        with open(usr_id + "ses.json", "r", encoding='utf-8') as my_file:
-                ses_json = json.loads(my_file.read())
-                
-                
-                
-                
+        dbase = DataBaseExec(db)
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+    
         lastUgl = list(ses_json["last"].values())[0]
         lastProd = list(ses_json["last"].keys())[0]
 
         ses_json["eda"][lastProd] = [lastUgl,comm]
         ses_json["last"] = {}
-        with open(usr_id+"ses.json", "w",encoding='utf-8') as my_file:
-            my_file.write(json.dumps(ses_json,ensure_ascii=False))
+        
+        dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
         return [1,""]
         
 class Node6(Node):
     def doSmth(self,comm,usr_id,db):
-        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
-                ses_json = json.loads(my_file.read())
+        dbase = DataBaseExec(db)
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+
         ses_json["koef"] = comm
-        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
-            my_file.write(json.dumps(ses_json,ensure_ascii=False))
+        dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+
         return [1,""]
         
-class Node6(Node):
-    def doSmth(self,comm,usr_id,db):
-        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
-                ses_json = json.loads(my_file.read())
-        ses_json["koef"] = comm
-        with open(usr_id + "ses.json", "w",encoding='utf-8') as my_file:
-            my_file.write(json.dumps(ses_json,ensure_ascii=False))
-        return [1,""]
         
         
 class Node7(Node):
     def doSmth(self,comm,usr_id,db):
-        with open(usr_id+"ses.json", "r",encoding='utf-8') as my_file:
-                ses_json = json.loads(my_file.read())
+        saveEda(comm,usr_id,db)
+        
+        
+        
+        
+        
+    def saveEda(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+
         counter = 0
         for key, val in ses_json["eda"].items():
-            counter = counter + float(val[0])*float(val[1])/100 
+            counter = counter + float(val[0])*float(val[1])/100      
+        counter = counter / 10
         counter = counter * float(ses_json["koef"])
         counter = round(counter,2)
         ses_json["counter"] = counter
-        with open(usr_id+"ses.json", "w",encoding='utf-8') as my_file:
-            my_file.write(json.dumps(ses_json,ensure_ascii=False))
+        
+        dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+
         return [1,"Вам рекомендовано сделать " + str(counter) + " едениц инсулина " ]
+        
+        
+        
         
         
 class Node100(Node):
@@ -212,6 +201,8 @@ class FSM():
         say_psd = Node103("\w*","Скажите Пароль",103)
         
         self.cnode = startNode
+        
+        
         
         Node.connectOneWay(startNode,diabet)
         Node.connectOneWay(diabet,startNode)

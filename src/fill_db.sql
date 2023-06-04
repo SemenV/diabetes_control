@@ -36,7 +36,7 @@ INSERT  INTO eda (useid, ch_day, menu_eda) VALUES (
 
 INSERT  INTO eda (useid, ch_day, menu_eda,ch_nagruzka,time_nagruzka) VALUES (
 (SELECT idd FROM people where id_alice = 'u432'),
-'2023-06-03 14:14:14+03',
+'2023-06-04 14:14:14+03',
 'греча',
 'hod',
 '5мин'

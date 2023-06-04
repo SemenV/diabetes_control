@@ -18,9 +18,32 @@ class DataBaseExec:
             print(e)
         else:
             self.__db.commit()
+        try:
+            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'new')" 
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
+        try:
+            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod')" 
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
         
-    def getIdByLogin(self, login, password):
+    def getIdByLoginPsw(self, login, password):
         sql = "SELECT idd FROM people WHERE login = '" + login + "' AND passwordd = '" + password + "'"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+        #change
+    def getNagruzkaNames(self, useid):
+        sql = "SELECT nagruzka_name FROM all_nagruzka WHERE useid = '" + useid + "'"
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
@@ -43,6 +66,9 @@ class DataBaseExec:
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
+        
+        
+
     
     def delTmpReg(self,id_alice):
         try: 
@@ -67,7 +93,7 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res
         
-       
+      
     def setTmpLogin(self,id_alice, login):
         sql = "UPDATE reg_tmp SET login = '" + login + "' WHERE id_alice = '" + id_alice + "'"
         self.__cur.execute(sql)
