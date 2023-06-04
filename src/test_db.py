@@ -32,4 +32,4 @@ z = {"eda" : {},"last" : {},"koef" : ""}
 
 #print(bool(dbase.insertTmpRegIdAlice('тест_только_алисы')))
 #db.rollback()
-print(dbase.setNagruzka('10','test', 'test'))
+print(dbase.getNagruzkaPoints('7','szxdfg'))

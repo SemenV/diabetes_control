@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+qwe = function () {
+
+var dps1 = [];
+var dps2 = {{  session['tmp_values']|safe }};
+var chart = new CanvasJS.Chart("chartContainer", {
+	exportEnabled: true,
+	title :{
+		text: "Dynamic Spline Chart"
+	},
+	data: [{
+		type: "line",
+		markerSize: 0,
+		dataPoints: dps2 
+	},
+	{
+	type: "scatter",
+		toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+		dataPoints: dps1
+	
+	}]
+	
+});
+
+
+
+	dps1.push({
+		x: 1,
+		y: 1                
+	});
+	dps1.push({
+		x: 1.5,
+		y: 3                
+	});
+	dps1.push({
+		x: 2,
+		y: 4                
+	});
+
+
+
+
+chart.render();
+
+}
+</script>
+
+</head>
+<body  onload="setNagr(); qwe();">
+{% for msg in get_flashed_messages()%}
+<div class = "flash"> {{msg}}</div>
+{% endfor %}
+<button onclick="add_triple_val()" >add</button>
+<button onclick="chart.render();" >render</button>
+
+
+<form action="/show_nagr" method = "post" id="nagruzka">
+<select id = "select_nagruzka" name = "select_nagruzka" onchange="changeNagr(this)">
+{% for nagName in session['allNagruzki']%}
+<option value = "{{nagName[0]}}">{{nagName[0]}}</option>
+{% endfor %}
+
+</select>
+</form>
+
+
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+ 
+</body>
+</html>
+
+
+<script>
+
+function changeNagr(val) {
+val.form.submit();
+}
+
+function setNagr() {
+
+document.getElementById('select_nagruzka').value = '{{session['nagruzka']}}';
+
+}
+
+</script>

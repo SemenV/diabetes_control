@@ -99,30 +99,31 @@ def getSplines(A,B,proizv):
     
 def get_spl_val(A,B,proizv,delimeter):
     Xall = getSplines(A,B,proizv)
-    #print(Xall)
+    print(Xall)
     xval = []
     yval = []
-    #print("============================  " + str(A[len(A)-1]+delimeter))
-    for i in np.arange(0,A[len(A)-1],delimeter):
-        #print("=======xavll =   "+ str(i))
+    print("============================  " + str(A[len(A)-1]+delimeter))
+    for i in np.arange(0,A[len(A)-1]+delimeter,delimeter):
+        print("=======xavll =   "+ str(i))
         xval.append(i)
         for k in range(len(A)-1):
             if ((i >= A[k]) and (i < A[k+1])):
 
                 yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
-                #print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
+                print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
                 yval.append(yval_add)
-        #if (i >= A[len(A)-1]):
-        #    yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
-        #    print("Ak=" + str(A[k]) + "    i=" + str(i) + "   Ak+1=" + str(A[k+1]) + "yvall= " + str(yval_add))
-         #   yval.append(yval_add)
+        if (i >= A[len(A)-1]):
+            Ak = len(A)-2
+            yval_add= Xall[Ak][0] * i**3+ Xall[Ak][1]*i**2 + Xall[Ak][2]*i**1 + Xall[Ak][3]
+            print("Ak=" + str(A[Ak]) + "    i=" + str(i) + "   Ak+1=" + str(A[Ak]) + "yvall= " + str(yval_add))
+            yval.append(yval_add)
     
     l = 0
-    #print (xval)
-    #print(yval)
+    print (xval)
+    print(yval)
     
-    #print (len(xval))
-    #print(len(yval))
+    print (len(xval))
+    print(len(yval))
     return [xval, yval]
     
 def get_spl_prepered(A,B,proizv,delimeter):
@@ -133,28 +134,39 @@ def get_spl_prepered(A,B,proizv,delimeter):
     return ret_val
 
 
+def get_spl_prepered_two(ABP,delimeter):
+    A = []
+    B = []
+    proizv = []
+    i = 0
+    while (i < len(ABP) - 1):
+        A.append(ABP[i])
+        B.append(ABP[i+1])
+        proizv.append(ABP[i+2])
+        i = i + 3
+
+    return get_spl_prepered(A,B ,proizv,delimeter)
     
     
-    
-#a = []
-#a.append(0)
-#a.append(1)
-#a.append(4)
-#a.append(6)
+a = []
+a.append(0)
+a.append(1)
+a.append(4)
+a.append(6)
 
 
-#b = []
-#b.append(0)
-#b.append(3)
-#b.append(2)
-#b.append(3)
+b = []
+b.append(0)
+b.append(3)
+b.append(2)
+b.append(3)
 
 
-#proizv = []
-#proizv.append(0)
-#proizv.append(0)
-#proizv.append(-1.6197)
-#proizv.append(0)
+proizv = []
+proizv.append(0)
+proizv.append(0)
+proizv.append(-1.6197)
+proizv.append(0)
 
-
-#get_spl_prepered(a,b,proizv,0.1)
+#pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0 ]
+#get_spl_prepered_two(pr,0.1)

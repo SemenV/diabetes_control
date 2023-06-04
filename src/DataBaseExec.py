@@ -46,15 +46,22 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res
         
-        #change
+       
     def getNagruzkaNames(self, useid):
         sql = "SELECT nagruzka_name FROM all_nagruzka WHERE useid = '" + useid + "'"
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
+    
+    
+    def getNagruzkaPoints(self, useid,name):
+        sql = "SELECT nagruzka FROM all_nagruzka WHERE useid = '" + useid + "' and nagruzka_name = '" + name +"'"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+    
         
         
-        #change
     def setNagruzka(self, useid, nagruzka_name, nagruzka):
         sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "');"
         self.__cur.execute(sql)

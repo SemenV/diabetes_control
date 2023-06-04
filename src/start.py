@@ -80,6 +80,7 @@ def send_to_calc_ret():
     return redirect(url_for('tlog'))
 
 
+
 @app.route("/new_nagr", methods=['POST','GET'])
 def new_nagr():
     if 'userIdLogged' in session:
@@ -131,50 +132,42 @@ def new_nagr():
         return redirect(url_for('tlog'))
 
 
-@app.route("/nagr/<nagruzka>", methods=['POST','GET'])
-def calc_ret(nagruzka):
+@app.route("/show_nagr", methods=['POST','GET'])
+def calc_ret():
     if 'userIdLogged' in session:
         session['tmp_values'] = ""
         session['main_values'] = ""
         session['counter'] = ""
-        
-        if request.method == "GET":
-            return render_template("calc.html",nagruzka = nagruzka )
-
-
-        
+        userIdLogged = str(session['userIdLogged'])
         db = get_database()
-        if request.method == "POST":
-            counter = request.form['counter']
-            session['counter'] = counter
-            main_values = []
-            tmp_values = []
-            A = []
-            B = []
-            proizv = []
-            for i in range(int(counter)):
-                i = i + 1;
-                x = float(request.form['x' + str(i)])
-                A.append(x)
-                main_values.append(x)
-                y = float(request.form['y' + str(i)])
-                B.append(y)
-                main_values.append(y)
-                yp = float(request.form['yp' + str(i)])
-                proizv.append(yp)
-                main_values.append(yp)
-                tmp_values.append({"x": x, "y" : y})
-            
-            
-            all_values = get_spl_prepered(A,B,proizv,0.1)
-                
+        dbase = DataBaseExec(db)
+        
+        
 
-            session['tmp_values'] = json.dumps(all_values)
-            session['main_values'] = main_values
-            session.modified = True
-            flash(' '.join([str(elem) for elem in main_values]))
+            
 
-        return render_template("calc.html", nagruzka = nagruzka)
+        
+        nazvanie = request.form.get('select_nagruzka')
+        if (nazvanie == None):
+            name = dbase.getNagruzkaNames(userIdLogged)[0][0]
+            session['nagruzka'] = name
+        else:
+            session['nagruzka'] = nazvanie            
+        finalNagruzka = session['nagruzka']
+    
+        session['allNagruzki'] = dbase.getNagruzkaNames(userIdLogged)
+    
+        points = json.loads(dbase.getNagruzkaPoints(userIdLogged,finalNagruzka)[0][0])
+        
+        all_values = get_spl_prepered_two(points,0.1)
+        
+        session['tmp_values'] = json.dumps(all_values)
+    
+    
+    
+        return render_template("show_nagr_html.html" )
+
+
         
     else:
         return redirect(url_for('tlog'))
