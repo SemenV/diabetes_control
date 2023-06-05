@@ -81,7 +81,7 @@ def send_to_calc_ret():
 
 
 
-@app.route("/new_nagr", methods=['POST','GET'])
+@app.route("/new_subspline_nagr", methods=['POST','GET'])
 def new_nagr():
     if 'userIdLogged' in session:
         session['tmp_values'] = ""
@@ -89,7 +89,7 @@ def new_nagr():
         session['counter'] = 0
         
         if request.method == "GET":
-            return render_template("new_nagr_html.html")
+            return render_template("new_subspline_nagr_html.html")
 
 
         if request.method == "POST":
@@ -124,9 +124,9 @@ def new_nagr():
                 dbase = DataBaseExec(db)
                 userIdLogged = session['userIdLogged']
                 nazvanie = request.form['nazvanie']
-                dbase.setNagruzka(str(userIdLogged),nazvanie,json.dumps(main_values, ensure_ascii=False))
+                dbase.setNagruzka(str(userIdLogged),nazvanie,json.dumps(main_values, ensure_ascii=False), 'subspline')
 
-        return render_template("new_nagr_html.html")
+        return render_template("new_subspline_nagr_html.html")
             
     else:
         return redirect(url_for('tlog'))

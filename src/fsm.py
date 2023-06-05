@@ -135,10 +135,6 @@ class Node6(Node):
         
 class Node7(Node):
     def doSmth(self,comm,usr_id,db):
-        saveEda(comm,usr_id,db)
-
-        
-    def saveEda(self,comm,usr_id,db):
         dbase = DataBaseExec(db)
         ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
 
@@ -152,10 +148,22 @@ class Node7(Node):
         
         dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
 
-        return [1,"Вам рекомендовано сделать " + str(counter) + " едениц инсулина " ]
+        return [1,"Вам рекомендовано сделать только на еду " + str(counter) + " едениц инсулина на еду " ]
         
+
+class Node8(Node):     
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)    
         
-        
+        allNagr = dbase.getNagruzkaNames(dbase.getIdByAlice(usr_id)[0][0])
+        for nagr in allNagr:
+            if (nagr[0] == comm):
+                ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+                ses_json["nagruzka"] = [comm]
+                dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+                return [1, "Выбранна нагрузка " + comm]
+                
+        return [0, "Нету такой нагрузки"] 
         
         
 class Node100(Node):
@@ -207,7 +215,8 @@ class FSM():
         newProd = self.addStage(Node4(".+","Скажите продукт",4))
         grams = self.addStage(Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5))
         uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
-        calc = self.addStage(Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",7))
+        calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчиать",7))
+        calc = self.addStage(Node8("\w*","Скажите нагрузку",7))
         
         setings = self.addStage(Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100))
         register = self.addStage(Node101("Р*р*егистрация","Скажите регистрация",101))

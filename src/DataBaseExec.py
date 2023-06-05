@@ -19,20 +19,9 @@ class DataBaseExec:
         else:
             self.__db.commit()
             
-            
-            
-            
-         
+
         try:
-            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'new')" 
-            self.__cur.execute(sql)
-        except Exception as e:
-            self.__db.rollback()
-            print(e)
-        else:
-            self.__db.commit()
-        try:
-            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod')" 
+            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod','linear')" 
             self.__cur.execute(sql)
         except Exception as e:
             self.__db.rollback()
@@ -62,12 +51,12 @@ class DataBaseExec:
     
         
         
-    def setNagruzka(self, useid, nagruzka_name, nagruzka):
-        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "');"
+    def setNagruzka(self, useid, nagruzka_name, nagruzka,vid):
+        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+vid +"');"
         self.__cur.execute(sql)
         self.__db.commit()
         
-    #зачем ?    
+    
     def getIdByAlice(self, id_alice):
         sql = "SELECT idd FROM people WHERE id_alice = '" + id_alice + "'"
         self.__cur.execute(sql)
@@ -174,3 +163,7 @@ class DataBaseExec:
         sql = "UPDATE people SET stage = '" + str(stage) + "' WHERE id_alice = '" + id_alice + "'"
         self.__cur.execute(sql)
         self.__db.commit()
+        
+        
+        
+    

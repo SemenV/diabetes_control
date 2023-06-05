@@ -4,6 +4,11 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+DO $$ BEGIN
+    CREATE TYPE ch_nagr_type_enum AS ENUM ('linear', 'subspline');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 
 CREATE TABLE IF NOT EXISTS people
@@ -22,6 +27,7 @@ CREATE TABLE IF NOT EXISTS all_nagruzka (
 	useid INTEGER,
 	nagruzka_name VARCHAR(2048), 	
 	nagruzka VARCHAR(2048),
+	nagr_type ch_nagr_type_enum,
 	UNIQUE (useid, nagruzka_name)
 );
 
