@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS eda (
 	useid INTEGER,
 	ch_day timestamp UNIQUE, 
 	menu_eda VARCHAR(2048),  
-	ch_nagruzka VARCHAR(2048),
-	time_nagruzka VARCHAR(200),
 	FOREIGN KEY (useid) REFERENCES people (idd)
 );	
 

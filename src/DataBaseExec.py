@@ -85,8 +85,12 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res
         
-        
-
+    def setMenuRow(self,id_alice,eda):
+        dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        id_user = str(self.getIdByAlice(id_alice)[0][0])
+        sql = "INSERT INTO eda (useid, ch_day,menu_eda) VALUES ('" + id_user + "','" + dt  + "','"+ eda + "');"
+        self.__cur.execute(sql)
+        self.__db.commit()
     
     def delTmpReg(self,id_alice):
         try: 

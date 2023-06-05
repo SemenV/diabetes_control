@@ -188,9 +188,12 @@ class Node10(Node):
     def doSmth(self,comm,usr_id,db):
         dbase = DataBaseExec(db)  
         ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
-        point = ses_json["nagruzka"][1]
+        point = ses_json["nagruzka"][1] #значение нагрузки
         eda = ses_json["counter"]
         edaAndPoint =   eda - point
+        ses_json['result'] = edaAndPoint
+
+        dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
         return [1, "Вам надо сделать " + str(edaAndPoint)]
         
         
@@ -248,7 +251,7 @@ class FSM():
         calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчиать",7))
         sayNagr = self.addStage(Node8("\w*","Скажите название нагрузки",8))
         sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки",9))
-        insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчиать",10))
+        insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчитать",10))
         
         
         setings = self.addStage(Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100))

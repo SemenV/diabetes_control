@@ -33,12 +33,10 @@ INSERT  INTO eda (useid, ch_day, menu_eda) VALUES (
 'сметана, огурцы'
 );
 
-INSERT  INTO eda (useid, ch_day, menu_eda,ch_nagruzka,time_nagruzka) VALUES (
+INSERT  INTO eda (useid, ch_day, menu_eda) VALUES (
 (SELECT idd FROM people where id_alice = 'u432'),
 '2023-06-04 14:14:14+03',
-'греча',
-'hod',
-'5мин'
+'греча'
 );
 
 UPDATE people SET id_alice = 'alice123' WHERE login = 'таня' AND passwordd = 'т';
