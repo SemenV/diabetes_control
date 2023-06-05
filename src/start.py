@@ -8,6 +8,7 @@ from fsm import FSM
 from DataBaseExec import *
 import pickle
 from  splineDeriv import * 
+from linear_inter import *
 
 host = 'host.docker.internal'
 user = 'postgres'
@@ -50,8 +51,8 @@ def tlog():
         dbase = DataBaseExec(db)
         IDDB = dbase.getIdByLoginPsw(request.form['username'],request.form['password'])
         session['userIdLogged'] = IDDB[0][0]
-        dt = datetime.now()
-        flash(dbase.getDayMenu(session['userIdLogged'],dt)    )
+        
+
             
     if 'userIdLogged' in session:
         return redirect(url_for('profile_day',day = '20.05.2023'))
@@ -61,11 +62,19 @@ def tlog():
     return render_template("login.html")
 
 
-@app.route("/profile/<day>", methods=['POST','GET'])
-def profile_day(day):
-
+@app.route("/profile", methods=['POST','GET'])
+def profile_day():
+    if request.method == "GET":
+        session['day'] = datetime.now().strftime('%Y-%m-%d')
+    if request.method == "POST":
+        session['day'] = request.form.get("start")
+    db = get_database()
+    dbase = DataBaseExec(db)
+    res = dbase.getDayMenu(session['userIdLogged'],datetime.strptime(session['day'] , '%Y-%m-%d'))
+    
+    flash(res)
     if 'userIdLogged' in session:
-        return render_template("profile.html",day = day)
+        return render_template("profile.html")
     else:
         return redirect(url_for('tlog'))
     
@@ -79,6 +88,36 @@ def logout():
 def send_to_calc_ret():
     return redirect(url_for('tlog'))
 
+
+
+
+@app.route("/new_linear_nagr", methods=['POST','GET'])
+def new_linear_nagr():
+    if 'userIdLogged' in session:
+        session['tmp_values'] = ""
+        session['main_values'] = ""
+        main_values = []
+        
+        if request.method == "POST":
+            x = float(request.form.get('x'))
+            main_values.append(x)
+            y = float(request.form.get('y'))
+            main_values.append(y)
+            tg = y/x
+            all_values = get_linear_prepered(tg,0.3)
+            session['tmp_values'] = json.dumps(all_values)
+            session['main_values'] = main_values
+            if (request.form.get("savebtn") != None):
+                db = get_database()
+                dbase = DataBaseExec(db)
+                userIdLogged = session['userIdLogged']
+                nazvanie = request.form['nazvanie']
+                dbase.setNagruzka(str(userIdLogged),nazvanie,json.dumps(tg, ensure_ascii=False), 'linear')
+            
+        return render_template("new_linear_nagr_html.html")
+    else:
+        return redirect(url_for('tlog'))   
+        
 
 
 @app.route("/new_subspline_nagr", methods=['POST','GET'])

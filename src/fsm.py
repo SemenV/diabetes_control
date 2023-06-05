@@ -9,7 +9,7 @@ import requests
 import sys
 from  splineDeriv import *
 import ast
-
+from linear_inter import *
 
 class Node():
     
@@ -148,7 +148,7 @@ class Node7(Node):
         
         dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
 
-        return [1,"Вам рекомендовано сделать только на еду " + str(counter) + " едениц инсулина на еду " ]
+        return [1,"Вам рекомендовано сделать только на еду " + str(counter) + " едениц инсулина " ]
         
 
 class Node8(Node):     
@@ -172,13 +172,17 @@ class Node9(Node):
         nameNagruzka = ses_json["nagruzka"][0]
         nagr = dbase.getNagrAndType(usr_id,nameNagruzka)
         if (nagr[0][1] == 'linear'):
-            return [1, "Еще не доделано linear point"]
+            tg = ast.literal_eval(nagr[0][0])
+            point = get_linear_inter_point(tg,float(comm))
+            ses_json["nagruzka"].append(point)
+            dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+            return [1, "Значение нагрузки " + str(point) + "хлебные еденицы "]
         elif (nagr[0][1] == 'subspline'):
             listm = ast.literal_eval(nagr[0][0])
             point = get_spline_point_two(listm, float(comm))
             ses_json["nagruzka"].append(point)
             dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-            return [1, "Значение нагрузки " + str(point)]
+            return [1, "Значение нагрузки " + str(point) + "хлебные еденицы "]
         else:
             return [0, "Нету такой нагрузки"]
         
@@ -190,11 +194,17 @@ class Node10(Node):
         ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
         point = ses_json["nagruzka"][1] #значение нагрузки
         eda = ses_json["counter"]
-        edaAndPoint =   eda - point
+        koef = float(ses_json["koef"])
+        edaAndPoint =   eda - point * koef
         ses_json['result'] = edaAndPoint
 
         dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-        return [1, "Вам надо сделать " + str(edaAndPoint)]
+        
+        if (edaAndPoint <= 0):
+            HEEat = round((edaAndPoint / koef * (-1)),2)
+            return [1, "Вам надо поесть. Вы получили " + str(HEEat) + " хлебных единиц с учётом нагрузки "]
+        else:
+            return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки "]
         
         
         
@@ -248,7 +258,7 @@ class FSM():
         newProd = self.addStage(Node4(".+","Скажите продукт",4))
         grams = self.addStage(Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5))
         uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
-        calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчиать",7))
+        calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчитать",7))
         sayNagr = self.addStage(Node8("\w*","Скажите название нагрузки",8))
         sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки",9))
         insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчитать",10))

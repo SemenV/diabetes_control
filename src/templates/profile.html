@@ -3,14 +3,32 @@
 <head>
 	<title>Example</title>
 </head>
-<body>
+<body  onload="setDay();">
 
 {% for msg in get_flashed_messages()%}
 <div class = "flash"> {{msg}}</div>
 {% endfor %}
-Пользователь {{session['userIdLogged']}} Day = {{day}}
+Пользователь {{session['userIdLogged']}} 
 <form action="/logout" method = "post">
 	<div><input type = "submit" value = "Log out"></div>
 </form>
+<form action="/profile" method = "post">
+<input type="date" id="start" name="start"  value="2018-07-22" onchange = "subm(this);" >
+</form>
+
+
 </body>
 </html>
+<script>
+
+function subm(val) {
+val.form.submit();
+}
+function setDay() {
+
+document.getElementById('start').value = '{{session['day']}}';
+
+}
+
+
+</script>

@@ -61,8 +61,8 @@ class DataBaseExec:
     
         
         
-    def setNagruzka(self, useid, nagruzka_name, nagruzka,vid):
-        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+vid +"');"
+    def setNagruzka(self, useid, nagruzka_name, nagruzka,nagr_type):
+        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+nagr_type +"');"
         self.__cur.execute(sql)
         self.__db.commit()
         
@@ -76,17 +76,17 @@ class DataBaseExec:
     def getDayMenu(self,userIdLogged,dt):
         dtStart = dt
         dtStart = dtStart.replace(hour=0, minute=0, second=0, microsecond=0)
-        dtStartStr = dtStart.strftime('%Y-%m-%d %H:%M:%S')
+        dtStartStr = dtStart.strftime('%Y-%m-%d %H:%M:%S+03')
         dtEnd = dt
         dtEnd = dtEnd.replace(hour=23, minute=59, second=59, microsecond=0)
-        dtEndStr = dtEnd.strftime('%Y-%m-%d %H:%M:%S')
-        sql = "SELECT ch_day, menu_eda,ch_nagruzka,time_nagruzka FROM eda WHERE useid = " + str(userIdLogged) + " AND ch_day > '" + dtStartStr + "+03' AND ch_day < '" + dtEndStr + "+03'"
+        dtEndStr = dtEnd.strftime('%Y-%m-%d %H:%M:%S+03')
+        sql = "SELECT ch_day, menu_eda FROM eda WHERE useid = " + str(userIdLogged) + " AND ch_day > '" + dtStartStr + "' AND ch_day < '" + dtEndStr + "'"
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
         
     def setMenuRow(self,id_alice,eda):
-        dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S+03')
         id_user = str(self.getIdByAlice(id_alice)[0][0])
         sql = "INSERT INTO eda (useid, ch_day,menu_eda) VALUES ('" + id_user + "','" + dt  + "','"+ eda + "');"
         self.__cur.execute(sql)
