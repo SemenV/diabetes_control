@@ -10,6 +10,7 @@ import sys
 
 
 
+
 class Node():
     
     def __init__(self,stroka,opisanie,stage):
@@ -17,6 +18,10 @@ class Node():
         self.stroka = stroka
         self.opisanie = opisanie
         self.stage = stage
+    
+    def getStage(self):
+        return self.stage
+
 
     def doSmth(self,comm,usr_id,db):
         return [1,""]
@@ -52,6 +57,7 @@ class Node():
 #============================================================================================
 class Node1(Node):
     def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
         dbase.register_id_alice(usr_id)
         try: 
             os.remove(usr_id + "ses.json")
@@ -89,7 +95,7 @@ class Node4(Node):
                 i = i + 1
                 continue
             else:
-                ugl = r_j["products"][i]["nutriments"]["carbohydrates"]
+                ugl = float(r_j["products"][i]["nutriments"]["carbohydrates"])
         if (ugl < 0):
             return [0, "Продукт не найден "]
         else:
@@ -130,10 +136,7 @@ class Node6(Node):
 class Node7(Node):
     def doSmth(self,comm,usr_id,db):
         saveEda(comm,usr_id,db)
-        
-        
-        
-        
+
         
     def saveEda(self,comm,usr_id,db):
         dbase = DataBaseExec(db)
@@ -186,23 +189,31 @@ class Node103(Node):
 
         
 class FSM():
+    allStages = {}
+    
+    def addStage(self,n): 
+        staage = n.getStage()
+        self.allStages[staage] = n
+        return n
+    
+    
+    def getNodeByStage(self,stage):
+        return self.allStages[stage]    
+    
 
     def __init__(self):
-        startNode = Node1("Н*н*ачало|^$","Скажите начало",1)
-        diabet = Node2("Д*д*иабет","Скажите диабет для подсчета",2)
-        newProd = Node4(".+","Скажите продукт",4)
-        grams = Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5) 
-        uglK = Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6)
-        calc = Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",7)
+        startNode = self.addStage(Node1("Н*н*ачало|^$","Скажите начало",1))
+        diabet = self.addStage(Node2("Д*д*иабет","Скажите диабет для подсчета",2))
+        newProd = self.addStage(Node4(".+","Скажите продукт",4))
+        grams = self.addStage(Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5))
+        uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
+        calc = self.addStage(Node7("П*п*одсчитать|П*п*осчитать","Скажите подсчитать",7))
         
-        setings = Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100)
-        register = Node101("Р*р*егистрация","Скажите регистрация",101)
-        say_login = Node102("\w*","Скажите логин",102)
-        say_psd = Node103("\w*","Скажите Пароль",103)
-        
-        self.cnode = startNode
-        
-        
+        setings = self.addStage(Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100))
+        register = self.addStage(Node101("Р*р*егистрация","Скажите регистрация",101))
+        say_login = self.addStage(Node102("\w*","Скажите логин",102))
+        say_psd = self.addStage(Node103("\w*","Скажите Пароль",103))
+             
         
         Node.connectOneWay(startNode,diabet)
         Node.connectOneWay(diabet,startNode)
@@ -238,8 +249,22 @@ class FSM():
     
     
     
-    def act(self,comm,usr_id,db):
-        l = self.cnode.next(comm,usr_id,db)
-        self.cnode = l[0]
-        return [l[1] + self.cnode.getDiscAvNodes(),self.cnode.stage]
+    
+    
+    def act(self,comm,usr_id,db,stage):
+        cNode = self.getNodeByStage(stage)
+        if (cNode.getStage() == 1):
+            cNode.doSmth(comm,usr_id,db)
+        l = self.getNodeByStage(stage).next(comm,usr_id,db)
+        return [l[0],l[1] + l[0].getDiscAvNodes()]
+    
+    def actDB(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)
+        stage = dbase.getStageDB(usr_id)[0][0]
+
+        l = self.act(comm,usr_id,db,stage)
+        newStage = l[0].getStage()
+        dbase.updateStage(usr_id,newStage)
+        return [l[0].getStage(),l[1]]
+        
         

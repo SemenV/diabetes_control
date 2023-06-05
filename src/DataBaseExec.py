@@ -164,7 +164,13 @@ class DataBaseExec:
         self.__db.commit()
 
 
-
-    
+    def getStageDB(self,id_alice):
+        sql = "SELECT COALESCE((SELECT  stage FROM people WHERE id_alice = '" + id_alice+ "'), 1);"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
         
-    
+    def updateStage(self,id_alice,stage):
+        sql = "UPDATE people SET stage = '" + str(stage) + "' WHERE id_alice = '" + id_alice + "'"
+        self.__cur.execute(sql)
+        self.__db.commit()

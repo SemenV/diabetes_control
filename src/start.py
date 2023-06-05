@@ -192,16 +192,9 @@ def indexx():
     
     comm = request_data["request"]["command"]
     usr_id = request_data["session"]["user"]["user_id"]
-    usr_fsm = 0
-    try:
-        with open(usr_id + ".pickle", 'rb') as f:
-            usr_fsm  = pickle.load(f)
-    except:
-        usr_fsm = FSM()
-        strokaStage = usr_fsm.act("начало",usr_id,db)
-        with open(usr_id + ".pickle", 'wb') as f:
-            pickle.dump(usr_fsm, f)
+
     
+ 
     
     
     
@@ -215,11 +208,10 @@ def indexx():
     else:
     
     
+        usr_fsm = FSM()
+        stroka = usr_fsm.actDB(comm,usr_id,db)
 
-        stroka = usr_fsm.act(comm,usr_id,db)
-        with open(usr_id + ".pickle", 'wb') as f:
-            pickle.dump(usr_fsm, f)
-        zapr["response"]["text"] = stroka[0]
+        zapr["response"]["text"] = stroka[1]
         return jsonify(zapr)
 
 

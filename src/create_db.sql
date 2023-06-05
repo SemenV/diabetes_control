@@ -1,4 +1,10 @@
-CREATE TYPE ch_role_enum AS ENUM ('user', 'admin');
+DO $$ BEGIN
+    CREATE TYPE ch_role_enum AS ENUM ('user', 'admin');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+
 
 CREATE TABLE IF NOT EXISTS people
 (
@@ -6,7 +12,8 @@ CREATE TABLE IF NOT EXISTS people
     login VARCHAR(100) UNIQUE, 
     passwordd VARCHAR(100),
 	id_alice VARCHAR(1024) UNIQUE,
-	ch_role ch_role_enum
+	ch_role ch_role_enum,
+	stage INTEGER
 );
 
 
