@@ -7,8 +7,8 @@ from psycopg2.errorcodes import UNIQUE_VIOLATION
 from psycopg2 import errors
 import requests 
 import sys
-
-
+from  splineDeriv import *
+import ast
 
 
 class Node():
@@ -155,15 +155,45 @@ class Node8(Node):
     def doSmth(self,comm,usr_id,db):
         dbase = DataBaseExec(db)    
         
-        allNagr = dbase.getNagruzkaNames(dbase.getIdByAlice(usr_id)[0][0])
+        allNagr = dbase.getNagruzkaNames(str(dbase.getIdByAlice(usr_id)[0][0]))
         for nagr in allNagr:
             if (nagr[0] == comm):
                 ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
                 ses_json["nagruzka"] = [comm]
                 dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-                return [1, "Выбранна нагрузка " + comm]
+                return [1, "Выбранна нагрузка " + comm + " "]
                 
         return [0, "Нету такой нагрузки"] 
+        
+class Node9(Node):     
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)    
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+        nameNagruzka = ses_json["nagruzka"][0]
+        nagr = dbase.getNagrAndType(usr_id,nameNagruzka)
+        if (nagr[0][1] == 'linear'):
+            return [1, "Еще не доделано linear point"]
+        elif (nagr[0][1] == 'subspline'):
+            listm = ast.literal_eval(nagr[0][0])
+            point = get_spline_point_two(listm, float(comm))
+            ses_json["nagruzka"].append(point)
+            dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+            return [1, "Значение нагрузки " + str(point)]
+        else:
+            return [0, "Нету такой нагрузки"]
+        
+        return [] 
+        
+class Node10(Node):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)  
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+        point = ses_json["nagruzka"][1]
+        eda = ses_json["counter"]
+        edaAndPoint =   eda - point
+        return [1, "Вам надо сделать " + str(edaAndPoint)]
+        
+        
         
         
 class Node100(Node):
@@ -216,7 +246,10 @@ class FSM():
         grams = self.addStage(Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5))
         uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
         calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчиать",7))
-        calc = self.addStage(Node8("\w*","Скажите нагрузку",7))
+        sayNagr = self.addStage(Node8("\w*","Скажите название нагрузки",8))
+        sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки",9))
+        insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчиать",10))
+        
         
         setings = self.addStage(Node100("Н*н*астройки|Н*н*астроить","Скажите настройки",100))
         register = self.addStage(Node101("Р*р*егистрация","Скажите регистрация",101))
@@ -240,7 +273,15 @@ class FSM():
         
         Node.connectOneWay(uglK,calc)
         Node.connectOneWay(calc,startNode)
-    
+        
+        Node.connectOneWay(calc,sayNagr)
+        Node.connectOneWay(sayNagr,startNode)
+        
+        Node.connectOneWay(sayNagr,sayTime)
+        Node.connectOneWay(sayTime,startNode)
+        
+        Node.connectOneWay(sayTime,insulin)
+        Node.connectOneWay(insulin,startNode)
     
     
     

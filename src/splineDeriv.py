@@ -177,5 +177,5 @@ proizv.append(0)
 proizv.append(-1.6197)
 proizv.append(0)
 
-pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0]
-print(get_spline_point_two(pr,4.4))
+#pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0]
+#print(get_spline_point_two(pr,4.4))

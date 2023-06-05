@@ -2,7 +2,8 @@ from DataBaseExec import *
 from datetime import date, timedelta, datetime
 import psycopg2
 import json
-from fsm import FSM
+from fsm import *
+import ast
 
 host = '127.0.0.1'
 user = 'postgres'
@@ -38,5 +39,5 @@ z = {"eda" : {},"last" : {},"koef" : ""}
 
 usr_fsm = FSM()
 
-
-print(dbase.register_id_alice('3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0'))
+qwe = Node9("\d*\.*\d*","Скажите время нагрузки",9)
+qwe.doSmth('1.3', '3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0',db)

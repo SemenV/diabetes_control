@@ -18,7 +18,17 @@ class DataBaseExec:
             print(e)
         else:
             self.__db.commit()
-            
+        
+        try:
+            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagruzka,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'beg','[0.0, 0.0, 11.43, 2.0, 2.0, 11.43]','subspline')" 
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
+        
+        
 
         try:
             sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod','linear')" 
@@ -165,5 +175,10 @@ class DataBaseExec:
         self.__db.commit()
         
         
-        
+    def getNagrAndType(self,id_alice,nagrName):
+        id_user = str(self.getIdByAlice(id_alice)[0][0])
+        sql = "SELECT nagruzka, nagr_type FROM all_nagruzka where nagruzka_name = '" + nagrName + "' and useid = '" + id_user + "';"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res 
     
