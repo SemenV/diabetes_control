@@ -2,6 +2,7 @@ from datetime import date, timedelta, datetime
 import psycopg2
 from psycopg2.errorcodes import UNIQUE_VIOLATION
 from psycopg2 import errors
+from pytz import timezone
 
 class DataBaseExec:
     def __init__(self, db):
@@ -31,7 +32,7 @@ class DataBaseExec:
         
 
         try:
-            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod','linear')" 
+            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagruzka,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod','1.619','linear')" 
             self.__cur.execute(sql)
         except Exception as e:
             self.__db.rollback()
@@ -86,7 +87,8 @@ class DataBaseExec:
         return res
         
     def setMenuRow(self,id_alice,eda):
-        dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S+03')
+        tz=timezone('Europe/Moscow')
+        dt = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
         id_user = str(self.getIdByAlice(id_alice)[0][0])
         sql = "INSERT INTO eda (useid, ch_day,menu_eda) VALUES ('" + id_user + "','" + dt  + "','"+ eda + "');"
         self.__cur.execute(sql)

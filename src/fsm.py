@@ -79,6 +79,9 @@ class Node2(Node):
         
 class Node4(Node):
     def doSmth(self,comm,usr_id,db):
+        
+    
+    
         r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
         r_j = r.json()
         ugl = -1 
@@ -202,12 +205,18 @@ class Node10(Node):
         
         if (edaAndPoint <= 0):
             HEEat = round((edaAndPoint / koef * (-1)),2)
-            return [1, "Вам надо поесть. Вы получили " + str(HEEat) + " хлебных единиц с учётом нагрузки "]
+            return [1, "Вам надо поесть. Вы получили " + str(HEEat) + " хлебных единиц с учётом нагрузки. Результат сохранён "]
         else:
-            return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки "]
+            return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки. Результат сохранён "]
         
         
-        
+class Node20(Node):
+    def doSmth(self,comm,usr_id,db):
+        dbase = DataBaseExec(db)  
+        ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+
+        dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+        return [1, "Результат сохранён "]   
         
 class Node100(Node):
     def doSmth(self,comm,usr_id,db):
@@ -259,6 +268,7 @@ class FSM():
         grams = self.addStage(Node5("\d+\.*,*\d*", "Скажите сколько грамм продукта",5))
         uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
         calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчитать",7))
+        save = self.addStage(Node20("С*с*охранить","Скажите сохранить",20))
         sayNagr = self.addStage(Node8("\w*","Скажите название нагрузки",8))
         sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки",9))
         insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчитать",10))
@@ -286,6 +296,11 @@ class FSM():
         
         Node.connectOneWay(uglK,calc)
         Node.connectOneWay(calc,startNode)
+        
+        ##
+        Node.connectOneWay(calc,save)
+        Node.connectOneWay(save,startNode)
+        
         
         Node.connectOneWay(calc,sayNagr)
         Node.connectOneWay(sayNagr,startNode)

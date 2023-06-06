@@ -4,6 +4,7 @@ import psycopg2
 import json
 from fsm import *
 import ast
+from pytz import timezone
 
 host = '127.0.0.1'
 user = 'postgres'
@@ -39,6 +40,11 @@ z = {"eda" : {},"last" : {},"koef" : ""}
 
 usr_fsm = FSM()
 
-qwe = Node9("\d*\.*\d*","Скажите время нагрузки",9)
-print( dbase.getNagrAndType('3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0','hod'))
-qwe.doSmth('1.2', '3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0',db)
+#qwe = Node9("\d*\.*\d*","Скажите время нагрузки",9)
+#print( dbase.getNagrAndType('3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0','hod'))
+#qwe.doSmth('1.2', '3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0',db)
+
+tz=timezone('Europe/Moscow')
+
+
+print(datetime.now(tz))
