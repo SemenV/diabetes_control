@@ -60,14 +60,7 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res
     
-        
-        
-    #def setNagruzka(self, useid, nagruzka_name, nagruzka,nagr_type):
-    #    sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+nagr_type +"');"
-    #    self.__cur.execute(sql)
-    #    self.__db.commit()
-        
-        
+
         
     def setNagruzka(self, useid, nagruzka_name, nagruzka,nagr_type):
         sql = "DO $$ BEGIN UPDATE all_nagruzka SET nagruzka = '" +nagruzka+ "', nagr_type = '" +nagr_type+ "' WHERE useid = "+ useid +" and nagruzka_name = '" +nagruzka_name+ "'; IF NOT FOUND THEN INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES (" +useid +", '" + nagruzka_name +"' , '"+ nagruzka +"','"+ nagr_type +"'); END IF; END; $$"
@@ -194,6 +187,12 @@ class DataBaseExec:
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res 
+        
+    def getNagrAndTypeById(self,useid,nagrName):
+        sql = "SELECT nagruzka, nagr_type FROM all_nagruzka where nagruzka_name = '" + nagrName + "' and useid = '" + str(useid) + "';"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res 
     
     
     def getLocalFood(self,prod_name):
@@ -201,3 +200,33 @@ class DataBaseExec:
         self.__cur.execute(sql)
         res = self.__cur.fetchall()
         return res
+    
+    def romoveFromLocalFood(self,prod_name):
+        try: 
+            sql = "DELETE FROM localfood WHERE prod_name = '" + prod_name + "';"
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
+        
+    def getAllLocalFood(self):
+        sql = "SELECT prod_name, prod_param	FROM localfood;"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+    
+    def getUserRole(self, useid):
+        sql = "SELECT ch_role FROM people where idd = " + str(useid) + ";"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+        
+    def setFoodLocalFood(self, prod_name, prod_param):
+        sql = "DO $$ BEGIN UPDATE localfood SET prod_name = '" +prod_name+ "', prod_param = '" + str(prod_param)+ "' WHERE prod_name = '"+ prod_name + "'; IF NOT FOUND THEN INSERT INTO localfood (prod_name, prod_param) VALUES ('" +prod_name +"', " + str(prod_param) + "); END IF; END; $$"
+        self.__cur.execute(sql)
+        self.__db.commit()
+        

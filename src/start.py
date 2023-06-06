@@ -87,8 +87,30 @@ def logout():
 @app.route("/", methods=['POST','GET'])
 def send_to_calc_ret():
     return redirect(url_for('tlog'))
+    
+@app.route("/admin_save", methods=['POST'])
+def admin_save():
+    db = get_database()
+    dbase = DataBaseExec(db)
+    role = dbase.getUserRole(session['userIdLogged'])[0][0]
+    if (role == 'admin'):
+        prodAddName = request.form.get('prodAddName')
+        prodAddParam = request.form.get('prodAddParam')
+        dbase.setFoodLocalFood(prodAddName,prodAddParam)
+    return redirect(url_for('admin_panel')) 
 
-
+@app.route("/admin", methods=['POST','GET'])
+def admin_panel():
+    if 'userIdLogged' in session:
+        db = get_database()
+        dbase = DataBaseExec(db)
+        role = dbase.getUserRole(session['userIdLogged'])[0][0]
+        if (role == 'admin'):
+            if request.method == "POST":
+                prodToRem = request.form.get('removeProd')
+                dbase.romoveFromLocalFood(prodToRem)
+            session['all_food'] = dbase.getAllLocalFood()
+            return render_template("admin_panal.html")
 
 
 @app.route("/new_linear_nagr", methods=['POST','GET'])
@@ -195,11 +217,17 @@ def calc_ret():
         finalNagruzka = session['nagruzka']
     
         session['allNagruzki'] = dbase.getNagruzkaNames(userIdLogged)
-    
+        
+
         points = json.loads(dbase.getNagruzkaPoints(userIdLogged,finalNagruzka)[0][0])
         
-        all_values = get_spl_prepered_two(points,0.1)
-        
+        typeNagr = dbase.getNagrAndTypeById(session['userIdLogged'],finalNagruzka)[0][1]
+        all_values = []
+        if (typeNagr == 'subspline'):
+            all_values = get_spl_prepered_two(points,0.1)
+        else:
+            all_values = get_linear_prepered(points,0.3)
+            
         session['tmp_values'] = json.dumps(all_values)
     
     
