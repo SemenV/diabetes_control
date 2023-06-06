@@ -54,5 +54,9 @@ CREATE TABLE IF NOT EXISTS reg_tmp (
 	FOREIGN KEY (id_alice) REFERENCES people (id_alice)
 );
 
-
+CREATE TABLE IF NOT EXISTS localfood (
+	prod_id SERIAL PRIMARY KEY,
+	prod_name VARCHAR(100) UNIQUE, 	
+	prod_param DECIMAL
+);
 	

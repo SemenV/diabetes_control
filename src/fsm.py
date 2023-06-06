@@ -79,35 +79,41 @@ class Node2(Node):
         
 class Node4(Node):
     def doSmth(self,comm,usr_id,db):
-        
-    
-    
-        r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
-        r_j = r.json()
-        ugl = -1 
-        i = 0;
-        rangeAmount = 0
-        if (r_j["page_count"] > 5):
-            rangeAmount = 5
-        else:
-            rangeAmount = r_j["page_count"]
-        
-        for i in range(rangeAmount):
-            try: r_j["products"][i]["nutriments"]["carbohydrates"]
-            except:
-                i = i + 1
-                continue
-            else:
-                ugl = float(r_j["products"][i]["nutriments"]["carbohydrates"])
-        if (ugl < 0):
-            return [0, "Продукт не найден "]
-        else:
-            dbase = DataBaseExec(db)
+        dbase = DataBaseExec(db)
+        localUgl = dbase.getLocalFood(comm)
+        if (bool(localUgl)):
+            finalUgl = float(localUgl[0][0])
             ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
-            ses_json["last"][comm] = ugl
-
+            ses_json["last"][comm] = finalUgl
             dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-            return [1, "В продукте " + str(ugl) + " углеводов "]
+            return [1, "В продукте " + str(finalUgl) + " углеводов "]
+        
+        else:    
+            r = requests.get("https://ru-ru.openfoodfacts.org/category/" + comm + "/1.json")
+            r_j = r.json()
+            ugl = -1 
+            i = 0;
+            rangeAmount = 0
+            if (r_j["page_count"] > 5):
+                rangeAmount = 5
+            else:
+                rangeAmount = r_j["page_count"]
+            
+            for i in range(rangeAmount):
+                try: r_j["products"][i]["nutriments"]["carbohydrates"]
+                except:
+                    i = i + 1
+                    continue
+                else:
+                    ugl = float(r_j["products"][i]["nutriments"]["carbohydrates"])
+            if (ugl < 0):
+                return [0, "Продукт не найден "]
+            else:
+                ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
+                ses_json["last"][comm] = ugl
+
+                dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+                return [1, "В продукте " + str(ugl) + " углеводов "]
             
 
 class Node5(Node):

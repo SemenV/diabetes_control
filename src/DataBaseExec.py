@@ -62,8 +62,15 @@ class DataBaseExec:
     
         
         
+    #def setNagruzka(self, useid, nagruzka_name, nagruzka,nagr_type):
+    #    sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+nagr_type +"');"
+    #    self.__cur.execute(sql)
+    #    self.__db.commit()
+        
+        
+        
     def setNagruzka(self, useid, nagruzka_name, nagruzka,nagr_type):
-        sql = "INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES ('" + useid + "' , '"+nagruzka_name  +"' , '" + nagruzka+ "','"+nagr_type +"');"
+        sql = "DO $$ BEGIN UPDATE all_nagruzka SET nagruzka = '" +nagruzka+ "', nagr_type = '" +nagr_type+ "' WHERE useid = "+ useid +" and nagruzka_name = '" +nagruzka_name+ "'; IF NOT FOUND THEN INSERT INTO all_nagruzka (useid, nagruzka_name, nagruzka, nagr_type) VALUES (" +useid +", '" + nagruzka_name +"' , '"+ nagruzka +"','"+ nagr_type +"'); END IF; END; $$"
         self.__cur.execute(sql)
         self.__db.commit()
         
@@ -188,3 +195,9 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res 
     
+    
+    def getLocalFood(self,prod_name):
+        sql = "SELECT  prod_param FROM localfood WHERE prod_name = '" + prod_name+ "';"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res

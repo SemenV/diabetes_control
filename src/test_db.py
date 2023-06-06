@@ -47,4 +47,4 @@ usr_fsm = FSM()
 tz=timezone('Europe/Moscow')
 
 
-print(datetime.now(tz))
+print(bool(dbase.getLocalFood('хлеб')))
