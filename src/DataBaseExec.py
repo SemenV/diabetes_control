@@ -243,6 +243,14 @@ class DataBaseExec:
         res = self.__cur.fetchall()
         return res
         
+        #####################
+    def getUserEdaByAlice(self, id_alice, prod_name):
+        id_user = str(self.getIdByAlice(id_alice)[0][0])
+        sql = "SELECT prod_param FROM usereda WHERE useid = '"+str(id_user)+ "' and prod_name = '" +prod_name+"';"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
         
         
     def romoveFromUserEda(self,useid,prod_name):
