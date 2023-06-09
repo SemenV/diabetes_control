@@ -62,6 +62,31 @@ def tlog():
     return render_template("login.html")
 
 
+
+@app.route("/user_eda_save", methods=['POST','GET'])
+def user_eda_save():
+    db = get_database()
+    dbase = DataBaseExec(db)
+    prodAddName = request.form.get('prodAddName')
+    prodAddParam = request.form.get('prodAddParam')
+    dbase.setFoodUserEda(session['userIdLogged'],prodAddName,prodAddParam)
+    return redirect(url_for('user_eda'))   
+    
+    
+
+@app.route("/user_eda", methods=['POST','GET'])
+def user_eda():
+    db = get_database()
+    dbase = DataBaseExec(db)
+    if request.method == "POST":
+            prodToRem = request.form.get('removeProd')
+            dbase.romoveFromUserEda(session['userIdLogged'],prodToRem)
+
+    session['user_food'] = dbase.getAllUserEdaById(session['userIdLogged'])
+    return render_template("user_eda_html.html")
+    
+
+
 @app.route("/profile", methods=['POST','GET'])
 def profile_day():
     if request.method == "GET":

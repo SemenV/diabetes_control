@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS all_nagruzka (
 	nagruzka_name VARCHAR(2048), 	
 	nagruzka VARCHAR(2048),
 	nagr_type ch_nagr_type_enum,
-	UNIQUE (useid, nagruzka_name)
+	UNIQUE (useid, nagruzka_name),
+	FOREIGN KEY (useid) REFERENCES people (idd)
 );
 
 CREATE TABLE IF NOT EXISTS eda ( 
@@ -58,5 +59,14 @@ CREATE TABLE IF NOT EXISTS localfood (
 	prod_id SERIAL PRIMARY KEY,
 	prod_name VARCHAR(100) UNIQUE, 	
 	prod_param DECIMAL
+);
+
+CREATE TABLE IF NOT EXISTS usereda (
+	ide SERIAL PRIMARY KEY,
+	useid INTEGER,
+	prod_name VARCHAR(100) , 	
+	prod_param DECIMAL,
+	UNIQUE (useid, prod_name),
+	FOREIGN KEY (useid) REFERENCES people (idd)
 );
 	

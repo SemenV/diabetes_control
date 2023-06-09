@@ -230,3 +230,27 @@ class DataBaseExec:
         self.__cur.execute(sql)
         self.__db.commit()
         
+        
+        
+    def setFoodUserEda(self, useid, prod_name, prod_param):
+        sql = "DO $$ BEGIN UPDATE usereda SET useid = '" +str(useid)+"', prod_name = '" +prod_name+ "', prod_param = '" + str(prod_param)+ "' WHERE useid = '"+ str(useid)+  "' and prod_name = '"+ prod_name + "'; IF NOT FOUND THEN INSERT INTO usereda (useid,prod_name, prod_param) VALUES ('"+ str(useid)+  "','" +prod_name +"', " + str(prod_param) + "); END IF; END; $$"
+        self.__cur.execute(sql)
+        self.__db.commit()
+        
+    def getAllUserEdaById(self, useid):
+        sql = "SELECT prod_name, prod_param FROM usereda WHERE useid = '"+str(useid)+ "';"
+        self.__cur.execute(sql)
+        res = self.__cur.fetchall()
+        return res
+        
+        
+        
+    def romoveFromUserEda(self,useid,prod_name):
+        try: 
+            sql = "DELETE FROM usereda WHERE useid = '" +str(useid )+"' and prod_name = '" + prod_name + "';"
+            self.__cur.execute(sql)
+        except Exception as e:
+            self.__db.rollback()
+            print(e)
+        else:
+            self.__db.commit()
