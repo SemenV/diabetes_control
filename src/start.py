@@ -308,5 +308,5 @@ def indexx():
 
 
 if __name__ == "__main__":
-    app.run(dubug=True, host='0.0.0.0')
+    app.run(dubug=True, host='host.docker.internal')
 

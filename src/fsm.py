@@ -59,10 +59,6 @@ class Node1(Node):
     def doSmth(self,comm,usr_id,db):
         dbase = DataBaseExec(db)
         dbase.register_id_alice(usr_id)
-        try: 
-            os.remove(usr_id + "ses.json")
-        except:
-            pass
         return [1, ""]     
 
 

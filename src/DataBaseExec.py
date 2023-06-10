@@ -20,25 +20,6 @@ class DataBaseExec:
         else:
             self.__db.commit()
         
-        try:
-            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagruzka,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'beg','[0.0, 0.0, 11.43, 2.0, 2.0, 11.43]','subspline')" 
-            self.__cur.execute(sql)
-        except Exception as e:
-            self.__db.rollback()
-            print(e)
-        else:
-            self.__db.commit()
-        
-        
-
-        try:
-            sql = "INSERT INTO all_nagruzka (useid, nagruzka_name,nagruzka,nagr_type) VALUES ( (SELECT idd FROM people WHERE id_alice = '" + id_alice + "'), 'hod','1.619','linear')" 
-            self.__cur.execute(sql)
-        except Exception as e:
-            self.__db.rollback()
-            print(e)
-        else:
-            self.__db.commit()
         
     def getIdByLoginPsw(self, login, password):
         sql = "SELECT idd FROM people WHERE login = '" + login + "' AND passwordd = '" + password + "'"
