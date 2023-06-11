@@ -152,9 +152,10 @@ def new_linear_nagr():
             y = float(request.form.get('y'))
             main_values.append(y)
             tg = y/x
-            all_values = get_linear_prepered(tg,0.3)
+            all_values = get_linear_prepered(tg,0.2)
             session['tmp_values'] = json.dumps(all_values)
             session['main_values'] = main_values
+            session['main_values_json'] = json.dumps(get_main_linear_point(main_values))
             if (request.form.get("savebtn") != None):
                 db = get_database()
                 dbase = DataBaseExec(db)
@@ -253,7 +254,7 @@ def calc_ret():
         if (typeNagr == 'subspline'):
             all_values = get_spl_prepered_two(points,0.1)
         else:
-            all_values = get_linear_prepered(points,0.3)
+            all_values = get_linear_prepered(points,0.2)
             
         session['tmp_values'] = json.dumps(all_values)
     
@@ -300,8 +301,7 @@ def indexx():
         zapr["response"]["text"] = "Я помогу подсчитать необходимое количество инсулина"
         return jsonify(zapr)
     else:
-    
-    
+
         usr_fsm = FSM()
         stroka = usr_fsm.actDB(comm,usr_id,db)
 

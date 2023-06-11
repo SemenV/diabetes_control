@@ -54,11 +54,7 @@ def calc_spl(A, B, proizv):
        
     #Возвращает ситему уранений которую надо решить и промежуток в котором строиться spline
     return [ur,RB,promez]
-
-def print_arr(a):
-    for s in a:
-        print(*s)
-        
+     
 
 def getSplines(A,B,proizv):
     k=0
@@ -80,9 +76,6 @@ def getSplines(A,B,proizv):
         resh = calc_spl(Anew,Bnew,newProizv)
         matA = resh[0]
         matB = resh[1]
-        print_arr(matA)
-        print(matB)
-
 
         a = np.array([matA[0], matA[1],matA[2],matA[3]])
 
@@ -91,7 +84,6 @@ def getSplines(A,B,proizv):
         
         Xall.append(x)
 
-        print(x)
         
         
     return Xall
@@ -124,18 +116,14 @@ def get_spl_val(A,B,proizv,delimeter):
     for i in np.arange(0,A[len(A)-1]+delimeter,delimeter):
 
         xval.append(i)
-        print("append x = " + str(i))
         for k in range(len(A)-1):
             if ((i >= A[k]) and (i < A[k+1])):
                 yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
                 yval.append(yval_add)
-                print("append y = " + str(yval_add))
         if (i >= A[len(A)-1]):
             Ak = len(A)-2
             yval_add= Xall[Ak][0] * i**3+ Xall[Ak][1]*i**2 + Xall[Ak][2]*i**1 + Xall[Ak][3]   
             yval.append(yval_add)
-            print("append y = " + str(yval_add))
-    print("lenth = " + str(len(xval)) + "  " + str(len(yval)))
     return [xval, yval]
     
 def get_spl_prepered(A,B,proizv,delimeter):
@@ -143,7 +131,6 @@ def get_spl_prepered(A,B,proizv,delimeter):
     all_values = get_spl_val(A,B,proizv,delimeter)
     for i in range(len(all_values[0])):
         ret_val.append({"x": all_values[0][i], "y" : all_values[1][i]})
-    print(all_values)
     return ret_val
 
 
@@ -161,25 +148,3 @@ def get_spl_prepered_two(ABP,delimeter):
     return get_spl_prepered(A,B ,proizv,delimeter)
     
     
-a = []
-a.append(0)
-a.append(1)
-a.append(4)
-a.append(6)
-
-
-b = []
-b.append(0)
-b.append(3)
-b.append(2)
-b.append(3)
-
-
-proizv = []
-proizv.append(0)
-proizv.append(0)
-proizv.append(-1.6197)
-proizv.append(0)
-
-pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0]
-print(get_spl_prepered(a,b,proizv,0.5))

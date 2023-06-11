@@ -4,7 +4,7 @@
 <script>
 qwe = function () {
 
-var dps1 = [];
+var dps1 = {{  session['main_values_json']|safe }};
 var dps2 = {{  session['tmp_values']|safe }};
 var chart = new CanvasJS.Chart("chartContainer", {
 	exportEnabled: true,
@@ -17,28 +17,14 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		dataPoints: dps2 
 	},
 	{
-	type: "scatter",
-		toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+		type: "scatter",
+		
 		dataPoints: dps1
 	
 	}]
 	
 });
 
-
-
-	dps1.push({
-		x: 1,
-		y: 1                
-	});
-	dps1.push({
-		x: 1.5,
-		y: 3                
-	});
-	dps1.push({
-		x: 2,
-		y: 4                
-	});
 
 
 

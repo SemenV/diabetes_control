@@ -17,8 +17,8 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		dataPoints: dps2 
 	},
 	{
-	type: "scatter",
-		toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+		type: "scatter",
+		
 		dataPoints: dps1
 	
 	}]
@@ -38,7 +38,6 @@ chart.render();
 <div class = "flash"> {{msg}}</div>
 {% endfor %}
 
-<button onclick="chart.render();" >render</button>
 
 
 
