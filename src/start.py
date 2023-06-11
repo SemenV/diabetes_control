@@ -9,6 +9,7 @@ from DataBaseExec import *
 import pickle
 from  splineDeriv import * 
 from linear_inter import *
+from spl_points_prepared import *
 
 host = 'host.docker.internal'
 user = 'postgres'
@@ -55,7 +56,7 @@ def tlog():
 
             
     if 'userIdLogged' in session:
-        return redirect(url_for('profile_day',day = '20.05.2023'))
+        return redirect(url_for('profile_day'))
  
       
       
@@ -203,6 +204,7 @@ def new_nagr():
 
             session['tmp_values'] = json.dumps(all_values)
             session['main_values'] = main_values
+            session['main_values_json'] = json.dumps(get_all_main_spl_prepared_two(main_values))
             session.modified = True
             flash(' '.join([str(elem) for elem in main_values]))
             if (request.form.get("savebtn") != None):

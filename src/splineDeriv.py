@@ -124,22 +124,26 @@ def get_spl_val(A,B,proizv,delimeter):
     for i in np.arange(0,A[len(A)-1]+delimeter,delimeter):
 
         xval.append(i)
+        print("append x = " + str(i))
         for k in range(len(A)-1):
             if ((i >= A[k]) and (i < A[k+1])):
                 yval_add= Xall[k][0] * i**3+ Xall[k][1]*i**2 + Xall[k][2]*i**1 + Xall[k][3]
                 yval.append(yval_add)
+                print("append y = " + str(yval_add))
         if (i >= A[len(A)-1]):
             Ak = len(A)-2
             yval_add= Xall[Ak][0] * i**3+ Xall[Ak][1]*i**2 + Xall[Ak][2]*i**1 + Xall[Ak][3]   
             yval.append(yval_add)
-
+            print("append y = " + str(yval_add))
+    print("lenth = " + str(len(xval)) + "  " + str(len(yval)))
     return [xval, yval]
     
 def get_spl_prepered(A,B,proizv,delimeter):
     ret_val = []
     all_values = get_spl_val(A,B,proizv,delimeter)
-    for i in range(len(all_values[0])-1):
+    for i in range(len(all_values[0])):
         ret_val.append({"x": all_values[0][i], "y" : all_values[1][i]})
+    print(all_values)
     return ret_val
 
 
@@ -177,5 +181,5 @@ proizv.append(0)
 proizv.append(-1.6197)
 proizv.append(0)
 
-#pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0]
-#print(get_spline_point_two(pr,4.4))
+pr = [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 4.0, 2.0, -1.6197, 6.0, 3.0, 0.0]
+print(get_spl_prepered(a,b,proizv,0.5))
