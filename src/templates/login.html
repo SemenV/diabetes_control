@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Example</title>
+	<title>Вход в уч. запись</title>
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/login.css')}}">
 </head>
 <body>
 
@@ -9,9 +10,11 @@
 
 
 <form action="/login" method = "post">
-	<div><label>User name: <input type = "text" name = "username"/> </label> </div>
-	<div><label>Password <input type = "password" name = "password"/> </label> </div>
-	<div><input type = "submit" value = "Sign in"> </div>
+	<label class = "labless">Логин пользователя </label>
+	<div><input type = "text" name = "username" class = "inpclass"/> </div>
+	<label class = "labless">Пароль </label> 
+	<input type = "password" name = "password" class = "inpclass"/> 
+	<div><input type = "submit" value = "Войти" class = "buttonss"> </div>
 
 </form>
 </body>

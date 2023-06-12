@@ -1,0 +1,25 @@
+.inpclass {
+display: block;
+margin-left: auto;
+margin-right: auto;
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 10px;
+}
+
+.buttonss {
+display: block;
+margin-left: auto;
+margin-right: auto;
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 10px;
+}
+
+.labless {
+display: block;
+text-align: center;
+font-size: 18px;	
+}
