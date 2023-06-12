@@ -26,7 +26,7 @@
 
 {% for onefood in session['user_food']%}
 <form action="/user_eda" method = "post" id="parent">
-<div class = "{{onefood[0]}}" id = "{{onefood[0]}}"> Eda = {{onefood[0]}} Ugl = {{onefood[1]}}</div>
+<div class = "{{onefood[0]}}" id = "{{onefood[0]}}"> Продукт: {{onefood[0]}} Углеводы: {{onefood[1]}}</div>
 <div><input type = "submit" value = "Удалить" class = "buttonss"> </div>
 <input type="hidden" name="removeProd" id = "removeProd" value= "{{onefood[0]}}" >
 </form>
