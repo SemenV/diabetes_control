@@ -1,0 +1,27 @@
+.buttonss {
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 10px;
+}
+
+
+.select {
+display: block;
+margin-left: auto;
+margin-right: auto;
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 10px;
+
+}
+
+
+
+.inpclass {
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 10px;
+}

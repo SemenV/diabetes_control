@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Example</title>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin_panel.css')}}">
 </head>
 <body>
 {% for msg in get_flashed_messages()%}
@@ -9,23 +9,33 @@
 {% endfor %}
 
 
-admin_save
+<select onChange="window.location.href=this.value" class = "select" >
+    <option value="/profile">Профиль</option>
+    <option value="/new_linear_nagr" >Новая linear нагрузка</option>
+	<option value="/new_subspline_nagr">Новая subspline админа</option>
+	<option value="/show_nagr" >Показатели нагрузки</option>
+	<option value="/user_eda" >Продукты пользователя</option>
+	<option value="/admin" selected>Панель админа</option>
+</select>
+
 <form action="/admin_save" method = "post" id="admin_save">
 <div><label>название продукта</label></div>
-<div><input type = "text" name = prodAddName></div>
+<div><input type = "text" name = prodAddName class = "inpclass"></div>
 <div><label>углеводы</label></div>
-<div><input type = "text" name = prodAddParam></div>
-<div><input type = "submit" value = "submit"> Сохранить</div>
+<div><input type = "text" name = prodAddParam class = "inpclass"></div>
+<div><input type = "submit" value = "Сохранить" class = "buttonss"> </div>
 </form>
 
 
 {% for onefood in session['all_food']%}
 <form action="/admin" method = "post" id="parent">
-<div class = "{{onefood[0]}}" id = "{{onefood[0]}}"> Eda = {{onefood[0]}} Ugl = {{onefood[1]}}</div>
-<div><input type = "submit" value = "submit"> remove</div>
+<div class = "{{onefood[0]}}" id = "{{onefood[0]}}"> Продукт: {{onefood[0]}} Углаводы: = {{onefood[1]}}</div>
+<div><input type = "submit" value = "Удалить" class = "buttonss"> </div>
 <input type="hidden" name="removeProd" id = "removeProd" value= "{{onefood[0]}}" >
 </form>
 
 {% endfor %}
+
+
 </body>
 </html>
