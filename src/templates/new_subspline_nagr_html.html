@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/new_subspline_nagr.css') }}">
 <script>
 qwe = function () {
 
@@ -34,28 +35,32 @@ chart.render();
 </head>
 <body  onload="qwe(); setDefaultInputVal();">
 
-{% for msg in get_flashed_messages()%}
-<div class = "flash"> {{msg}}</div>
-{% endfor %}
 
 
+<select onChange="window.location.href=this.value" class = "select" >
+    <option value="/profile">Профиль</option>
+    <option value="/new_linear_nagr">Новая linear нагрузка</option>
+	<option value="/new_subspline_nagr" selected>Новая subspline нагрузка</option>
+	<option value="/show_nagr" >Показатели нагрузки</option>
+		<option value="/admin">Панель админа</option>
+</select>
 
 
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-<button onclick="add_triple_val()" >add</button>
+<button onclick="add_triple_val()" class = "buttonss" >Добавить парметры</button>
 <form action="/new_subspline_nagr" method = "post" id="parent">
-	<div><input type = "submit" value = "submit"> </div>
-	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie"/> </label></div>
-	<div><label>Сохранить<input type="checkbox" id="savebtn" name="savebtn"> </label></div>
+	<div><input type = "submit" value = "Отправить" class = "buttonss"></div>
+	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie" class = "inpclass"/> </label></div>
+	<div><label>Сохранить<input type="checkbox" id="savebtn" name="savebtn" class = "btnclass"> </label></div>
 	
 	{% for point in range(0,session['counter'])%}
 	
 	
-	<div><label>x{{point}} <input type = "text"  id = "x{{point}}" name = "x{{point}}"/> </label></div>
-	<div><label>y{{point}} <input type = "text"  id  = "y{{point}}" name  = "y{{point}}"/> </label> </div>
-	<div><label>yp{{point}} <input type = "text" id = "yp{{point}}" name = "yp{{point}}"/> </label> </div>
+	<div><label>x{{point}} <input type = "text"  id = "x{{point}}" name = "x{{point}}" class = "inpclass"/> </label></div>
+	<div><label>y{{point}} <input type = "text"  id  = "y{{point}}" name  = "y{{point}}" class = "inpclass"/> </label> </div>
+	<div><label>yp{{point}} <input type = "text" id = "yp{{point}}" name = "yp{{point}}" class = "inpclass"/> </label> </div>
 	
 	{% endfor %}
 	
@@ -94,6 +99,7 @@ let outdiv = document.createElement("div");
 let outlab = document.createElement("label");
 let inpp = document.createElement("input");
 inpp.type = "text";
+inpp.classList.add("inpclass");
 inpp.name = xyp + a;
 outlab.textContent  = xyp + a;
 outlab.appendChild(inpp);

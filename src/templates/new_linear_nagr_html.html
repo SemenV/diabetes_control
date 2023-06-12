@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/new_linear_nagr.css')}}">
 <script>
 qwe = function () {
 
@@ -37,25 +38,27 @@ chart.render();
 </head>
 <body  onload="qwe(); setDefaultInputVal();">
 
-{% for msg in get_flashed_messages()%}
-<div class = "flash"> {{msg}}</div>
-{% endfor %}
-
-<button onclick="chart.render();" >render</button>
+<select onChange="window.location.href=this.value" class = "select" >
+    <option value="/profile">Профиль</option>
+    <option value="/new_linear_nagr" selected>Новая linear нагрузка</option>
+	<option value="/new_subspline_nagr">Новая subspline админа</option>
+	<option value="/show_nagr" >Показатели нагрузки</option>
+		<option value="/admin">Панель админа</option>
+</select>
 
 
 
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-<button onclick="add_triple_val()" >add</button>
+
 <form action="/new_linear_nagr" method = "post" id="parent">
-	<div><input type = "submit" value = "submit"> </div>
-	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie"/> </label></div>
+	<div><input type = "submit" value = "Отправить" class = "buttonss"> </div>
+	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie" class = "inpclass"/> </label></div>
 	<div><label>Сохранить<input type="checkbox" id="savebtn" name="savebtn"> </label></div>
 	
-	<div><label>x <input type = "text"  id = "x" name = "x"/> </label></div>
-	<div><label>y <input type = "text"  id  = "y" name  = "y"/> </label> </div>
+	<div><label>x <input type = "text"  id = "x" name = "x" class = "inpclass"/> </label></div>
+	<div><label>y <input type = "text"  id  = "y" name  = "y" class = "inpclass"/> </label> </div>
 	
 	
 

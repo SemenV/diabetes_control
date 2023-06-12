@@ -46,5 +46,4 @@ usr_fsm = FSM()
 
 tz=timezone('Europe/Moscow')
 
-dbase.romoveFromUserEda(1,'хлеб')
-print(dbase.getUserEdaByAlice('alice123', 'киви')[0][0])
+print(dbase.getNagruzkaPoints('2',None))
