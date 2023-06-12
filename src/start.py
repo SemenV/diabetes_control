@@ -107,7 +107,6 @@ def profile_day():
             resPy.append(elem)
         
         session['dayMenu'] = resPy
-        flash(res)
     
         return render_template("profile.html")
     else:

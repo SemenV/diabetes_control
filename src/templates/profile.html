@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Профиль</title>
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/profile.css')}}">
 </head>
 <body  onload="setDay();">
 
@@ -14,35 +15,61 @@
 	<option value="/admin" >Панель админа</option>
 </select>
 
-{% for msg in get_flashed_messages()%}
-<div class = "flash"> {{msg}}</div>
-{% endfor %}
 
 
-<form action="/logout" method = "post">
-	<div><input type = "submit" value = "Выйти"></div>
-</form>
 <form action="/profile" method = "post">
-<input type="date" id="start" name="start"  value="2018-07-22" onchange = "subm(this);" >
+<input type="date" id="start" name="start"  value="2018-07-22" onchange = "subm(this);" class = "dtime" >
 </form>
 
-<table>
+<table class = "center">
 	<tr>
 		<td>Время</td>
 		<td>Продукт (гр углеводов, гр съедено)</td>
 		<td>Угл. коэф</td>
 		<td>Инсулин только на продукты</td>
-		<td>Название нагр. и время</td>
-		<td>Доза Инсулина с нагрузкой или Кол-во Хе</td>
+		<td>Название нагр. и ХЕ на нагр.</td>
+		<td>Доза инсулина с нагрузкой или Кол-во Хе</td>
 	</tr>
 	
 	{% for menu in session['dayMenu'] %}
 	<tr>
 		<td>{{menu[0]}}</td>
-		<td> {{ menu[1]['eda']}}</td>
+		{% set ns = namespace(items= "") %}
+		{% for key, value in menu[1]['eda'].items() %}
+		{% set ns.items = ns.items + key  + ' ' %}
+			
+			{% for v in value %}
+				{%if loop.index0 == 0 %}
+			{% set ns.items = ns.items+ v |string  + ' углеводов ' %}
+			{% endif %}
+			{%if loop.index0 == 1 %}
+				{%set ns.items = ns.items + v  + ' грамм '%}
+			{% endif %}
+			{% endfor %}
+		{% set ns.items = ns.items + '<br>' %}
+		
+			
+		{% endfor %}
+		<td> {{ns.items | safe}}</td>
+		
+		
+		
+		
 		<td> {{ menu[1]['koef']}}</td>
 		<td> {{ menu[1]['counter']}} ЕД инсулина</td>
-		<td> {{ menu[1]['nagruzka']}}</td>
+		
+
+		{% set ns = namespace(items= "") %}
+		{% for par in menu[1]['nagruzka'] %}
+			{%if loop.index0 == 0 %}
+				{% set ns.items = ns.items+ par  + ' ' %}
+			{% endif %}
+			{%if loop.index0 == 1 %}
+				{%set ns.items = ns.items + par |string + ' ХЕ'%}
+			{% endif %}
+		{% endfor %}
+		
+		<td> {{ns.items}}</td>
 		<td> {{ menu[1]['result']}}</td>
 	</tr>
 	{% endfor %}
@@ -50,7 +77,9 @@
 </table>
 
 
-
+<form action="/logout" method = "post">
+	<div><input type = "submit" value = "Выйти" class = "buttonss" ></div>
+</form>
 
 
 

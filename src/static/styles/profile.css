@@ -1,0 +1,45 @@
+TABLE {
+
+    border-collapse: collapse; /* Убираем двойные линии между ячейками */
+   }
+   TD, TH {
+    padding: 3px; /* Поля вокруг содержимого таблицы */
+    border: 1px solid black; /* Параметры рамки */
+   }
+   
+table.center {
+  margin-left: auto; 
+  margin-right: auto;
+  margin-bottom: 30px;
+}
+
+.buttonss {
+display: block;
+margin-left: auto;
+margin-right: auto;
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 30px;
+}
+
+.select {
+display: block;
+margin-left: auto;
+margin-right: auto;
+min-width: 200px;
+max-width: 200px;
+padding : 5px 35px 10px 15px;	
+margin-bottom: 30px;
+
+}
+
+.dtime {
+display: block;
+margin-left: auto;
+margin-right: auto;
+padding : 5px 35px 10px 15px;
+font-size: 18px;
+margin-bottom: 10px; 
+	
+}
