@@ -67,7 +67,7 @@ class Node2(Node):
     def doSmth(self,comm,usr_id,db):
         dbase = DataBaseExec(db)
         dbase.deleteFromTmpTbale(usr_id)
-        z = {"eda" : {},"last" : {},"koef" : "", "nagruzka" : {}}
+        z = {"eda" : {},"last" : {},"koef" : ""}
         dbase.setTmpFood(usr_id,json.dumps(z))
         return [1, ""]
         
@@ -134,8 +134,15 @@ class Node7(Node):
         ses_json["counter"] = counter
         
         dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-
-        return [1,"Вам рекомендовано сделать только на еду " + str(counter) + " едениц инсулина " ]
+        if (counter < 0):
+            return [0," Некорректный ввод " ]
+        elif (counter >= 0 and counter < 10):
+            return [1,"Вам рекомендовано сделать только на еду " + str(counter) + " едениц инсулина " ]
+        elif (counter >= 10 and counter < 14):
+            return [1,"Внимание: вы близки к порогу максимально количества углеводов в один приём пищи, проверьте корректность ввода или скорректируйте еду. Высокая доза инсулина " + str(counter) ]
+        elif (counter >= 14):
+            return [0,"Внимание: привышен порог максимального количества углеводов в один приём пищи, проверьте корректность ввода или скорректируйте продукты"]
+        
         
 
 class Node8(Node):     
@@ -150,26 +157,27 @@ class Node8(Node):
                 dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
                 return [1, "Выбранна нагрузка " + comm + " "]
                 
-        return [0, "Нету такой нагрузки"] 
+        return [0, " Нету такой нагрузки "] 
         
 class Node9(Node):     
     def doSmth(self,comm,usr_id,db):
-        dbase = DataBaseExec(db)    
+        dbase = DataBaseExec(db)
+        comm = str(float(comm) / 60)
         ses_json = json.loads(dbase.getTmpFood(usr_id)[0][0])
         nameNagruzka = ses_json["nagruzka"][0]
         nagr = dbase.getNagrAndType(usr_id,nameNagruzka)
         if (nagr[0][1] == 'linear'):
             tg = ast.literal_eval(nagr[0][0])
-            point = get_linear_inter_point(tg,float(comm))
+            point = round(get_linear_inter_point(tg,float(comm)),2)
             ses_json["nagruzka"].append(point)
             dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-            return [1, "Значение нагрузки " + str(point) + "хлебные еденицы "]
+            return [1, "Значение нагрузки " + str(point) + " хлебные еденицы "]
         elif (nagr[0][1] == 'subspline'):
             listm = ast.literal_eval(nagr[0][0])
-            point = get_spline_point_two(listm, float(comm))
+            point = round(get_spline_point_two(listm, float(comm)),2)
             ses_json["nagruzka"].append(point)
             dbase.updateTmpFood(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-            return [1, "Значение нагрузки " + str(point) + "хлебные еденицы "]
+            return [1, "Значение нагрузки " + str(point) + " хлебные еденицы "]
         else:
             return [0, "Нету такой нагрузки"]
         
@@ -183,16 +191,28 @@ class Node10(Node):
         eda = ses_json["counter"]
         koef = float(ses_json["koef"])
         edaAndPoint =   eda - point * koef
-        ses_json['result'] = edaAndPoint
-
-        dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
         
+ 
         if (edaAndPoint <= 0):
             HEEat = round((edaAndPoint / koef * (-1)),2)
+            ses_json['result'] = str(HEEat) + " ХЕ "
+
+            dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
             return [1, "Вам надо поесть. Вы получили " + str(HEEat) + " хлебных единиц с учётом нагрузки. Результат сохранён "]
         else:
-            return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки. Результат сохранён "]
-        
+            if (edaAndPoint > 0 and edaAndPoint < 10):
+                ses_json['result'] = str(edaAndPoint) + " ЕД инсулина "
+                dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+                return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки. Результат сохранён "]
+            elif (edaAndPoint >= 10 and edaAndPoint < 14):
+                ses_json['result'] = str(edaAndPoint) + " ЕД инсулина "
+                dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
+                return [1,"Внимание: вы близки к порогу максимально количества углеводов в один приём пищи, проверьте корректность ввода или скорректируйте еду. Высокая доза инсулина " + str(edaAndPoint) + " результат сохранён " ]
+            elif (edaAndPoint >= 14):
+                return [0,"Внимание: привышен порог максимального количества углеводов в один приём пищи, проверьте корректность ввода или скорректируйте продукты"]
+
+            
+    
         
 class Node20(Node):
     def doSmth(self,comm,usr_id,db):

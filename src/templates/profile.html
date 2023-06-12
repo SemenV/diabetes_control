@@ -1,20 +1,57 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Example</title>
+	<title>Профиль</title>
 </head>
 <body  onload="setDay();">
+
+<select onChange="window.location.href=this.value" class = "select" >
+    <option value="/profile" selected>Профиль</option>
+    <option value="/new_linear_nagr" >Новая linear нагрузка</option>
+	<option value="/new_subspline_nagr">Новая subspline админа</option>
+	<option value="/show_nagr" >Показатели нагрузки</option>
+	<option value="/user_eda" >Продукты пользователя</option>
+	<option value="/admin" >Панель админа</option>
+</select>
 
 {% for msg in get_flashed_messages()%}
 <div class = "flash"> {{msg}}</div>
 {% endfor %}
-Пользователь {{session['userIdLogged']}} 
+
+
 <form action="/logout" method = "post">
-	<div><input type = "submit" value = "Log out"></div>
+	<div><input type = "submit" value = "Выйти"></div>
 </form>
 <form action="/profile" method = "post">
 <input type="date" id="start" name="start"  value="2018-07-22" onchange = "subm(this);" >
 </form>
+
+<table>
+	<tr>
+		<td>Время</td>
+		<td>Продукт (гр углеводов, гр съедено)</td>
+		<td>Угл. коэф</td>
+		<td>Инсулин только на продукты</td>
+		<td>Название нагр. и время</td>
+		<td>Доза Инсулина с нагрузкой или Кол-во Хе</td>
+	</tr>
+	
+	{% for menu in session['dayMenu'] %}
+	<tr>
+		<td>{{menu[0]}}</td>
+		<td> {{ menu[1]['eda']}}</td>
+		<td> {{ menu[1]['koef']}}</td>
+		<td> {{ menu[1]['counter']}} ЕД инсулина</td>
+		<td> {{ menu[1]['nagruzka']}}</td>
+		<td> {{ menu[1]['result']}}</td>
+	</tr>
+	{% endfor %}
+
+</table>
+
+
+
+
 
 
 </body>

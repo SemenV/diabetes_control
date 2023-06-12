@@ -46,4 +46,4 @@ usr_fsm = FSM()
 
 tz=timezone('Europe/Moscow')
 
-print(dbase.getNagruzkaPoints('2',None))
+print(dbase.getDayMenu('5',datetime.now())[0])

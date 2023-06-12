@@ -90,16 +90,25 @@ def user_eda():
 
 @app.route("/profile", methods=['POST','GET'])
 def profile_day():
-    if request.method == "GET":
-        session['day'] = datetime.now().strftime('%Y-%m-%d')
-    if request.method == "POST":
-        session['day'] = request.form.get("start")
-    db = get_database()
-    dbase = DataBaseExec(db)
-    res = dbase.getDayMenu(session['userIdLogged'],datetime.strptime(session['day'] , '%Y-%m-%d'))
-    
-    flash(res)
     if 'userIdLogged' in session:
+        if request.method == "GET":
+            session['day'] = datetime.now().strftime('%Y-%m-%d')
+        if request.method == "POST":
+            session['day'] = request.form.get("start")
+        db = get_database()
+        dbase = DataBaseExec(db)
+        res = dbase.getDayMenu(session['userIdLogged'],datetime.strptime(session['day'] , '%Y-%m-%d'))
+        
+        resPy = []
+        for i in res:
+            elem = []
+            elem.append(i[0])
+            elem.append(json.loads(i[1]))
+            resPy.append(elem)
+        
+        session['dayMenu'] = resPy
+        flash(res)
+    
         return render_template("profile.html")
     else:
         return redirect(url_for('tlog'))
