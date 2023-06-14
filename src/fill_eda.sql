@@ -1,0 +1,10 @@
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('абрикос',9);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('вафли',62.5);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('шоколад горький',48.2);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('макароны отварные',20);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('каша гречневая',14.6);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('хлеб',45.1);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('йогурт',3.5);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('йогурт сладкий',8.5);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('молоко',4.8);
+INSERT  INTO localfood (prod_name, prod_param) VALUES ('творог',3);

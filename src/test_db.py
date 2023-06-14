@@ -46,4 +46,6 @@ usr_fsm = FSM()
 
 tz=timezone('Europe/Moscow')
 
-print(dbase.getDayMenu('5',datetime.now())[0])
+allNagr = dbase.getNagruzkaNames(str(dbase.getIdByAlice("3E18334CDD236883E268CE71B6CD2A884B13FE86A046015CCF39208CBA83C7D0")[0][0]))
+for nagr in allNagr:
+    print(nagr[0] == "прогулка сад")

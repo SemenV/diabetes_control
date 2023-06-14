@@ -203,13 +203,13 @@ class Node10(Node):
             if (edaAndPoint > 0 and edaAndPoint < 10):
                 ses_json['result'] = str(edaAndPoint) + " ЕД инсулина "
                 dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
-                return [1, "Вам надо сделать " + str(edaAndPoint) + " с учётом нагрузки. Результат сохранён "]
+                return [1, "Вам надо сделать " + str(edaAndPoint) + " ЕД с учётом нагрузки. Результат сохранён "]
             elif (edaAndPoint >= 10 and edaAndPoint < 14):
                 ses_json['result'] = str(edaAndPoint) + " ЕД инсулина "
                 dbase.setMenuRow(usr_id,json.dumps(ses_json, ensure_ascii=False ))
                 return [1,"Внимание: вы близки к порогу максимально количества углеводов в один приём пищи, проверьте корректность ввода или скорректируйте еду. Высокая доза инсулина " + str(edaAndPoint) + " результат сохранён " ]
             elif (edaAndPoint >= 14):
-                return [0,"Внимание: привышен порог максимального количества углеводов в один приём пищи, проверьте правильность ввода или скорректируйте продукты "]
+                return [0,"Внимание: превышен порог максимального количества углеводов в один приём пищи, проверьте правильность ввода или скорректируйте продукты "]
 
             
     
@@ -273,8 +273,8 @@ class FSM():
         uglK = self.addStage(Node6("\d+\.*,*\d*","Скажите углеводный коэффициент",6))
         calc = self.addStage(Node7("П*п*осчитать|П*п*одсчитать","Скажите посчитать",7))
         save = self.addStage(Node20("С*с*охранить","Скажите сохранить",20))
-        sayNagr = self.addStage(Node8("\w*","Скажите название нагрузки",8))
-        sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки",9))
+        sayNagr = self.addStage(Node8("[а-яА-Я]* *[а-яА-Я]*","Скажите название нагрузки",8))
+        sayTime = self.addStage(Node9("\d*\.*\d*","Скажите время нагрузки в минутах",9))
         insulin = self.addStage(Node10("П*п*осчитать|П*п*одсчитать","Скажите посчитать",10))
         
         
