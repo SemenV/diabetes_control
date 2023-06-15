@@ -30,6 +30,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
 
 chart.render();
 
+return [dps1,dps2]
 }
 </script>
 
@@ -51,9 +52,9 @@ chart.render();
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-<button onclick="add_triple_val()" class = "buttonss" >Добавить парметры</button>
+<button onclick="add_triple_val()" class = "buttonss" id = "idbuttonss"  >Добавить парметры</button>
 <form action="/new_subspline_nagr" method = "post" id="parent">
-	<div><input type = "submit" value = "Отправить" class = "buttonss"></div>
+	<div><input type = "submit" value = "Отправить" class = "buttonss" id = "idsend"></div>
 	<div><label>Название <input type = "text" id="nazvanie" name = "nazvanie" class = "inpclass"/> </label></div>
 	<div><label>Сохранить<input type="checkbox" id="savebtn" name="savebtn" class = "btnclass"> </label></div>
 	
@@ -103,6 +104,7 @@ let inpp = document.createElement("input");
 inpp.type = "text";
 inpp.classList.add("inpclass");
 inpp.name = xyp + a;
+
 outlab.textContent  = xyp + a;
 outlab.appendChild(inpp);
 outdiv.appendChild(outlab);
